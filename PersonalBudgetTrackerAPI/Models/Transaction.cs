@@ -2,7 +2,7 @@
 
 namespace PersonalBudgetTrackerAPI.Models
 {
-    public class Transaction
+    public class Transaction : AuditableEntity
     {
         [Key]
         [Required]
