@@ -1,0 +1,6 @@
+@PersonalBudgetTrackerAPI_HostAddress = http://localhost:5214
+
+GET {{PersonalBudgetTrackerAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
