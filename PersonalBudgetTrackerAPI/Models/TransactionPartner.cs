@@ -1,0 +1,24 @@
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace PersonalBudgetTrackerAPI.Models
+{
+    public class TransactionPartner
+    {
+        [Key]
+        [Required]
+        public Guid Id { get; set; }
+        [Required]
+        public required string Name { get; set; }
+        [Required]
+        public required string Info { get; set; }
+
+        [Required]
+        public required string Location { get; set; }
+        [Required]
+        public required string Contact { get; set; }
+        public Guid? CategoryId { get; set; }
+
+        public Category? Category { get; set; }
+
+    }
+}
