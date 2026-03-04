@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "D:\\dot net\\projects\\PersonalBudgetTrackerAPISolution\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\dot net\\projects\\PersonalBudgetTrackerAPISolution\\PersonalBudgetTrackerAPI\\Controllers\\CategoriesController.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:PersonalBudgetTrackerAPI\\Controllers\\CategoriesController.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\dot net\\projects\\PersonalBudgetTrackerAPISolution\\PersonalBudgetTrackerAPI\\Controllers\\ReasonsController.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:PersonalBudgetTrackerAPI\\Controllers\\ReasonsController.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -75,6 +79,19 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "CategoriesController.cs",
+              "DocumentMoniker": "D:\\dot net\\projects\\PersonalBudgetTrackerAPISolution\\PersonalBudgetTrackerAPI\\Controllers\\CategoriesController.cs",
+              "RelativeDocumentMoniker": "PersonalBudgetTrackerAPI\\Controllers\\CategoriesController.cs",
+              "ToolTip": "D:\\dot net\\projects\\PersonalBudgetTrackerAPISolution\\PersonalBudgetTrackerAPI\\Controllers\\CategoriesController.cs",
+              "RelativeToolTip": "PersonalBudgetTrackerAPI\\Controllers\\CategoriesController.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAAA4AAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-04T15:49:56.551Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "ReasonsController.cs",
               "DocumentMoniker": "D:\\dot net\\projects\\PersonalBudgetTrackerAPISolution\\PersonalBudgetTrackerAPI\\Controllers\\ReasonsController.cs",
               "RelativeDocumentMoniker": "PersonalBudgetTrackerAPI\\Controllers\\ReasonsController.cs",
@@ -87,7 +104,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "ApplicationDbContext.cs",
               "DocumentMoniker": "D:\\dot net\\projects\\PersonalBudgetTrackerAPISolution\\PersonalBudgetTrackerAPI\\DatabaseContext\\ApplicationDbContext.cs",
               "RelativeDocumentMoniker": "PersonalBudgetTrackerAPI\\DatabaseContext\\ApplicationDbContext.cs",
@@ -100,7 +117,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "Transaction.cs",
               "DocumentMoniker": "D:\\dot net\\projects\\PersonalBudgetTrackerAPISolution\\PersonalBudgetTrackerAPI\\Models\\Transaction.cs",
               "RelativeDocumentMoniker": "PersonalBudgetTrackerAPI\\Models\\Transaction.cs",
@@ -112,7 +129,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "SeedData.cs",
               "DocumentMoniker": "D:\\dot net\\projects\\PersonalBudgetTrackerAPISolution\\PersonalBudgetTrackerAPI\\SeedData.cs",
               "RelativeDocumentMoniker": "PersonalBudgetTrackerAPI\\SeedData.cs",
@@ -124,7 +141,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "20260304140911_AuditFields.cs",
               "DocumentMoniker": "D:\\dot net\\projects\\PersonalBudgetTrackerAPISolution\\PersonalBudgetTrackerAPI\\Migrations\\20260304140911_AuditFields.cs",
               "RelativeDocumentMoniker": "PersonalBudgetTrackerAPI\\Migrations\\20260304140911_AuditFields.cs",
@@ -136,7 +153,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "AuditableEntity.cs",
               "DocumentMoniker": "D:\\dot net\\projects\\PersonalBudgetTrackerAPISolution\\PersonalBudgetTrackerAPI\\Models\\AuditableEntity.cs",
               "RelativeDocumentMoniker": "PersonalBudgetTrackerAPI\\Models\\AuditableEntity.cs",
@@ -148,7 +165,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 11,
               "Title": "Reason.cs",
               "DocumentMoniker": "D:\\dot net\\projects\\PersonalBudgetTrackerAPISolution\\PersonalBudgetTrackerAPI\\Models\\Reason.cs",
               "RelativeDocumentMoniker": "PersonalBudgetTrackerAPI\\Models\\Reason.cs",
@@ -160,7 +177,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 7,
               "Title": "PersonalBudgetTrackerAPI.csproj",
               "DocumentMoniker": "D:\\dot net\\projects\\PersonalBudgetTrackerAPISolution\\PersonalBudgetTrackerAPI\\PersonalBudgetTrackerAPI.csproj",
               "RelativeDocumentMoniker": "PersonalBudgetTrackerAPI\\PersonalBudgetTrackerAPI.csproj",
@@ -172,7 +189,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 8,
               "Title": "Program.cs",
               "DocumentMoniker": "D:\\dot net\\projects\\PersonalBudgetTrackerAPISolution\\PersonalBudgetTrackerAPI\\Program.cs",
               "RelativeDocumentMoniker": "PersonalBudgetTrackerAPI\\Program.cs",
@@ -184,7 +201,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 12,
               "Title": "PaymentGateway.cs",
               "DocumentMoniker": "D:\\dot net\\projects\\PersonalBudgetTrackerAPISolution\\PersonalBudgetTrackerAPI\\Models\\PaymentGateway.cs",
               "RelativeDocumentMoniker": "PersonalBudgetTrackerAPI\\Models\\PaymentGateway.cs",
@@ -196,7 +213,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 9,
               "Title": "Category.cs",
               "DocumentMoniker": "D:\\dot net\\projects\\PersonalBudgetTrackerAPISolution\\PersonalBudgetTrackerAPI\\Models\\Category.cs",
               "RelativeDocumentMoniker": "PersonalBudgetTrackerAPI\\Models\\Category.cs",
@@ -208,7 +225,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 13,
               "Title": "Income.cs",
               "DocumentMoniker": "D:\\dot net\\projects\\PersonalBudgetTrackerAPISolution\\PersonalBudgetTrackerAPI\\Models\\Income.cs",
               "RelativeDocumentMoniker": "PersonalBudgetTrackerAPI\\Models\\Income.cs",
@@ -220,7 +237,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 10,
               "Title": "TransactionPartner.cs",
               "DocumentMoniker": "D:\\dot net\\projects\\PersonalBudgetTrackerAPISolution\\PersonalBudgetTrackerAPI\\Models\\TransactionPartner.cs",
               "RelativeDocumentMoniker": "PersonalBudgetTrackerAPI\\Models\\TransactionPartner.cs",
@@ -232,7 +249,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 14,
               "Title": "Expense.cs",
               "DocumentMoniker": "D:\\dot net\\projects\\PersonalBudgetTrackerAPISolution\\PersonalBudgetTrackerAPI\\Models\\Expense.cs",
               "RelativeDocumentMoniker": "PersonalBudgetTrackerAPI\\Models\\Expense.cs",
