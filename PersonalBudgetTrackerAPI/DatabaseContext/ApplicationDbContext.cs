@@ -29,6 +29,12 @@ namespace PersonalBudgetTrackerAPI.DatabaseContext
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Transaction>()
+            .HasDiscriminator<string>("Discriminator")
+            .HasValue<Transaction>("Transaction")
+            .HasValue<Income>("Income")
+            .HasValue<Expense>("Expense");
+
+            modelBuilder.Entity<Transaction>()
                 .HasQueryFilter(t => !t.IsDeleted);
 
             base.OnModelCreating(modelBuilder);
