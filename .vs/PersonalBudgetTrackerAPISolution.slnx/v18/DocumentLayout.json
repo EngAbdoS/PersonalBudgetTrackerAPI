@@ -3,8 +3,12 @@
   "WorkspaceRootPath": "D:\\dot net\\projects\\PersonalBudgetTrackerAPISolution\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{4A6C8A69-9A24-22BB-8C88-2B2686C091B1}|PersonalBudgetTrackerAPI\\PersonalBudgetTrackerAPI.csproj|d:\\dot net\\projects\\personalbudgettrackerapisolution\\personalbudgettrackerapi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{4A6C8A69-9A24-22BB-8C88-2B2686C091B1}|PersonalBudgetTrackerAPI\\PersonalBudgetTrackerAPI.csproj|solutionrelative:personalbudgettrackerapi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+      "AbsoluteMoniker": "D:0:0:{4A6C8A69-9A24-22BB-8C88-2B2686C091B1}|PersonalBudgetTrackerAPI\\PersonalBudgetTrackerAPI.csproj|d:\\dot net\\projects\\personalbudgettrackerapisolution\\personalbudgettrackerapi\\seeddata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4A6C8A69-9A24-22BB-8C88-2B2686C091B1}|PersonalBudgetTrackerAPI\\PersonalBudgetTrackerAPI.csproj|solutionrelative:personalbudgettrackerapi\\seeddata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4A6C8A69-9A24-22BB-8C88-2B2686C091B1}|PersonalBudgetTrackerAPI\\PersonalBudgetTrackerAPI.csproj|d:\\dot net\\projects\\personalbudgettrackerapisolution\\personalbudgettrackerapi\\databasecontext\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4A6C8A69-9A24-22BB-8C88-2B2686C091B1}|PersonalBudgetTrackerAPI\\PersonalBudgetTrackerAPI.csproj|solutionrelative:personalbudgettrackerapi\\databasecontext\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{4A6C8A69-9A24-22BB-8C88-2B2686C091B1}|PersonalBudgetTrackerAPI\\PersonalBudgetTrackerAPI.csproj|d:\\dot net\\projects\\personalbudgettrackerapisolution\\personalbudgettrackerapi\\personalbudgettrackerapi.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
@@ -13,6 +17,10 @@
     {
       "AbsoluteMoniker": "D:0:0:{4A6C8A69-9A24-22BB-8C88-2B2686C091B1}|PersonalBudgetTrackerAPI\\PersonalBudgetTrackerAPI.csproj|d:\\dot net\\projects\\personalbudgettrackerapisolution\\personalbudgettrackerapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{4A6C8A69-9A24-22BB-8C88-2B2686C091B1}|PersonalBudgetTrackerAPI\\PersonalBudgetTrackerAPI.csproj|solutionrelative:personalbudgettrackerapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4A6C8A69-9A24-22BB-8C88-2B2686C091B1}|PersonalBudgetTrackerAPI\\PersonalBudgetTrackerAPI.csproj|d:\\dot net\\projects\\personalbudgettrackerapisolution\\personalbudgettrackerapi\\models\\category.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4A6C8A69-9A24-22BB-8C88-2B2686C091B1}|PersonalBudgetTrackerAPI\\PersonalBudgetTrackerAPI.csproj|solutionrelative:personalbudgettrackerapi\\models\\category.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{4A6C8A69-9A24-22BB-8C88-2B2686C091B1}|PersonalBudgetTrackerAPI\\PersonalBudgetTrackerAPI.csproj|d:\\dot net\\projects\\personalbudgettrackerapisolution\\personalbudgettrackerapi\\models\\transactionpartner.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -31,10 +39,6 @@
       "RelativeMoniker": "D:0:0:{4A6C8A69-9A24-22BB-8C88-2B2686C091B1}|PersonalBudgetTrackerAPI\\PersonalBudgetTrackerAPI.csproj|solutionrelative:personalbudgettrackerapi\\models\\paymentgateway.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{4A6C8A69-9A24-22BB-8C88-2B2686C091B1}|PersonalBudgetTrackerAPI\\PersonalBudgetTrackerAPI.csproj|d:\\dot net\\projects\\personalbudgettrackerapisolution\\personalbudgettrackerapi\\models\\category.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4A6C8A69-9A24-22BB-8C88-2B2686C091B1}|PersonalBudgetTrackerAPI\\PersonalBudgetTrackerAPI.csproj|solutionrelative:personalbudgettrackerapi\\models\\category.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{4A6C8A69-9A24-22BB-8C88-2B2686C091B1}|PersonalBudgetTrackerAPI\\PersonalBudgetTrackerAPI.csproj|d:\\dot net\\projects\\personalbudgettrackerapisolution\\personalbudgettrackerapi\\models\\income.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{4A6C8A69-9A24-22BB-8C88-2B2686C091B1}|PersonalBudgetTrackerAPI\\PersonalBudgetTrackerAPI.csproj|solutionrelative:personalbudgettrackerapi\\models\\income.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -50,41 +54,58 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 4,
           "Children": [
             {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
-            },
-            {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "PersonalBudgetTrackerAPI",
               "DocumentMoniker": "D:\\dot net\\projects\\PersonalBudgetTrackerAPISolution\\PersonalBudgetTrackerAPI\\PersonalBudgetTrackerAPI.csproj",
               "RelativeDocumentMoniker": "PersonalBudgetTrackerAPI\\PersonalBudgetTrackerAPI.csproj",
               "ToolTip": "D:\\dot net\\projects\\PersonalBudgetTrackerAPISolution\\PersonalBudgetTrackerAPI\\PersonalBudgetTrackerAPI.csproj",
               "RelativeToolTip": "PersonalBudgetTrackerAPI\\PersonalBudgetTrackerAPI.csproj",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAOAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2026-03-04T10:20:25.799Z",
+              "WhenOpened": "2026-03-04T12:55:18.585Z",
               "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "ApplicationDbContext.cs",
+              "DocumentMoniker": "D:\\dot net\\projects\\PersonalBudgetTrackerAPISolution\\PersonalBudgetTrackerAPI\\DatabaseContext\\ApplicationDbContext.cs",
+              "RelativeDocumentMoniker": "PersonalBudgetTrackerAPI\\DatabaseContext\\ApplicationDbContext.cs",
+              "ToolTip": "D:\\dot net\\projects\\PersonalBudgetTrackerAPISolution\\PersonalBudgetTrackerAPI\\DatabaseContext\\ApplicationDbContext.cs",
+              "RelativeToolTip": "PersonalBudgetTrackerAPI\\DatabaseContext\\ApplicationDbContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAlAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-04T12:22:56.614Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{c6f34f0d-7ae5-4f3a-be61-fe0c21ae9eb8}"
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "appsettings.json",
-              "DocumentMoniker": "D:\\dot net\\projects\\PersonalBudgetTrackerAPISolution\\PersonalBudgetTrackerAPI\\appsettings.json",
-              "RelativeDocumentMoniker": "PersonalBudgetTrackerAPI\\appsettings.json",
-              "ToolTip": "D:\\dot net\\projects\\PersonalBudgetTrackerAPISolution\\PersonalBudgetTrackerAPI\\appsettings.json",
-              "RelativeToolTip": "PersonalBudgetTrackerAPI\\appsettings.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2026-03-04T09:40:47.228Z",
+              "Title": "SeedData.cs",
+              "DocumentMoniker": "D:\\dot net\\projects\\PersonalBudgetTrackerAPISolution\\PersonalBudgetTrackerAPI\\SeedData.cs",
+              "RelativeDocumentMoniker": "PersonalBudgetTrackerAPI\\SeedData.cs",
+              "ToolTip": "D:\\dot net\\projects\\PersonalBudgetTrackerAPISolution\\PersonalBudgetTrackerAPI\\SeedData.cs",
+              "RelativeToolTip": "PersonalBudgetTrackerAPI\\SeedData.cs",
+              "ViewState": "AgIAAGcAAAAAAAAAAAAcwHIAAAAVAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-04T12:22:00.487Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 7,
               "Title": "Reason.cs",
               "DocumentMoniker": "D:\\dot net\\projects\\PersonalBudgetTrackerAPISolution\\PersonalBudgetTrackerAPI\\Models\\Reason.cs",
               "RelativeDocumentMoniker": "PersonalBudgetTrackerAPI\\Models\\Reason.cs",
@@ -97,20 +118,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "Program.cs",
               "DocumentMoniker": "D:\\dot net\\projects\\PersonalBudgetTrackerAPISolution\\PersonalBudgetTrackerAPI\\Program.cs",
               "RelativeDocumentMoniker": "PersonalBudgetTrackerAPI\\Program.cs",
               "ToolTip": "D:\\dot net\\projects\\PersonalBudgetTrackerAPISolution\\PersonalBudgetTrackerAPI\\Program.cs",
               "RelativeToolTip": "PersonalBudgetTrackerAPI\\Program.cs",
-              "ViewState": "AgIAAAUAAAAAAAAAAAAAABAAAAAkAAAAAAAAAA==",
+              "ViewState": "AgIAAAcAAAAAAAAAAAAAABMAAAAVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-03-04T04:42:26.369Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 8,
               "Title": "PaymentGateway.cs",
               "DocumentMoniker": "D:\\dot net\\projects\\PersonalBudgetTrackerAPISolution\\PersonalBudgetTrackerAPI\\Models\\PaymentGateway.cs",
               "RelativeDocumentMoniker": "PersonalBudgetTrackerAPI\\Models\\PaymentGateway.cs",
@@ -123,20 +144,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 4,
               "Title": "Category.cs",
               "DocumentMoniker": "D:\\dot net\\projects\\PersonalBudgetTrackerAPISolution\\PersonalBudgetTrackerAPI\\Models\\Category.cs",
               "RelativeDocumentMoniker": "PersonalBudgetTrackerAPI\\Models\\Category.cs",
               "ToolTip": "D:\\dot net\\projects\\PersonalBudgetTrackerAPISolution\\PersonalBudgetTrackerAPI\\Models\\Category.cs",
               "RelativeToolTip": "PersonalBudgetTrackerAPI\\Models\\Category.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAZAAAAAAAAAA==",
+              "ViewState": "AgIAAAsAAAAAAAAAAAAAwAQAAAARAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-03-04T05:54:46.861Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 6,
               "Title": "Transaction.cs",
               "DocumentMoniker": "D:\\dot net\\projects\\PersonalBudgetTrackerAPISolution\\PersonalBudgetTrackerAPI\\Models\\Transaction.cs",
               "RelativeDocumentMoniker": "PersonalBudgetTrackerAPI\\Models\\Transaction.cs",
@@ -149,7 +170,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 9,
               "Title": "Income.cs",
               "DocumentMoniker": "D:\\dot net\\projects\\PersonalBudgetTrackerAPISolution\\PersonalBudgetTrackerAPI\\Models\\Income.cs",
               "RelativeDocumentMoniker": "PersonalBudgetTrackerAPI\\Models\\Income.cs",
@@ -162,7 +183,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 5,
               "Title": "TransactionPartner.cs",
               "DocumentMoniker": "D:\\dot net\\projects\\PersonalBudgetTrackerAPISolution\\PersonalBudgetTrackerAPI\\Models\\TransactionPartner.cs",
               "RelativeDocumentMoniker": "PersonalBudgetTrackerAPI\\Models\\TransactionPartner.cs",
@@ -175,7 +196,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 10,
               "Title": "Expense.cs",
               "DocumentMoniker": "D:\\dot net\\projects\\PersonalBudgetTrackerAPISolution\\PersonalBudgetTrackerAPI\\Models\\Expense.cs",
               "RelativeDocumentMoniker": "PersonalBudgetTrackerAPI\\Models\\Expense.cs",

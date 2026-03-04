@@ -1,5 +1,6 @@
-using PersonalBudgetTrackerAPI.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
+using PersonalBudgetTrackerAPI;
+using PersonalBudgetTrackerAPI.DatabaseContext;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +19,11 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
-
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    SeedData.Seed(services);
+}
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
