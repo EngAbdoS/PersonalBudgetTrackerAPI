@@ -3,14 +3,14 @@ using PersonalBudgetTrackerAPI.Models;
 
 namespace PersonalBudgetTrackerAPI.DatabaseContext
 {
-    public class DatabaseContext : DbContext
+    public class ApplicationDbContext : DbContext
     {
 
-        public DatabaseContext(DbContextOptions options) : base(options)
+        public ApplicationDbContext(DbContextOptions options) : base(options)
         {
 
         }
-        public DatabaseContext() 
+        public ApplicationDbContext() 
         {
 
         }
