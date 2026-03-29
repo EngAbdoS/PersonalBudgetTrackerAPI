@@ -271,4 +271,5 @@ D:\dot net\projects\PersonalBudgetTrackerAPISolution\PersonalBudgetTrackerAPI\bi
 D:\dot net\projects\PersonalBudgetTrackerAPISolution\PersonalBudgetTrackerAPI\bin\Debug\net10.0\tr\Microsoft.CodeAnalysis.Scripting.resources.dll
 D:\dot net\projects\PersonalBudgetTrackerAPISolution\PersonalBudgetTrackerAPI\bin\Debug\net10.0\zh-Hans\Microsoft.CodeAnalysis.Scripting.resources.dll
 D:\dot net\projects\PersonalBudgetTrackerAPISolution\PersonalBudgetTrackerAPI\bin\Debug\net10.0\zh-Hant\Microsoft.CodeAnalysis.Scripting.resources.dll
-D:\dot net\projects\PersonalBudgetTrackerAPISolution\PersonalBudgetTrackerAPI\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt
+D:\dot net\projects\PersonalBudgetTrackerAPISolution\PersonalBudgetTrackerAPI\bin\Debug\net10.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+D:\dot net\projects\PersonalBudgetTrackerAPISolution\PersonalBudgetTrackerAPI\bin\Debug\net10.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll

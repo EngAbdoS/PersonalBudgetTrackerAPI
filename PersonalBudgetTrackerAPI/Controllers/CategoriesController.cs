@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,8 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using PersonalBudgetTrackerAPI.DatabaseContext;
 using PersonalBudgetTrackerAPI.Models;
 
+using Microsoft.AspNetCore.Authorization;
+
 namespace PersonalBudgetTrackerAPI.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CategoriesController : ControllerBase
@@ -43,6 +46,7 @@ namespace PersonalBudgetTrackerAPI.Controllers
         }
 
         // PUT: api/Categories/5
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCategory(Guid id, Category category)
         {
@@ -73,6 +77,7 @@ namespace PersonalBudgetTrackerAPI.Controllers
         }
 
         // POST: api/Categories
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult<Category>> PostCategory(Category category)
         {
@@ -83,6 +88,7 @@ namespace PersonalBudgetTrackerAPI.Controllers
         }
 
         // DELETE: api/Categories/5
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCategory(Guid id)
         {

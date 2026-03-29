@@ -1,6 +1,53 @@
 @PersonalBudgetTrackerAPI_HostAddress = http://localhost:5214
+@Token = YOUR_TOKEN_HERE
 
-GET {{PersonalBudgetTrackerAPI_HostAddress}}/weatherforecast/
-Accept: application/json
+### 1. Create a Role (Admin)
+POST {{PersonalBudgetTrackerAPI_HostAddress}}/api/Auth/create-role
+Content-Type: application/json
 
-###
+{
+    "roleName": "Admin"
+}
+
+### 2. Register a User
+POST {{PersonalBudgetTrackerAPI_HostAddress}}/api/Auth/register
+Content-Type: application/json
+
+{
+    "username": "testuser",
+    "email": "testuser@example.com",
+    "password": "Password123!",
+    "fullName": "Test User"
+}
+
+### 3. Assign Role to User
+POST {{PersonalBudgetTrackerAPI_HostAddress}}/api/Auth/assign-role
+Content-Type: application/json
+
+{
+    "username": "testuser",
+    "roleName": "Admin"
+}
+
+### 4. Login (This will return the JWT Token)
+POST {{PersonalBudgetTrackerAPI_HostAddress}}/api/Auth/login
+Content-Type: application/json
+
+{
+    "username": "testuser",
+    "password": "Password123!"
+}
+
+### 5. Access an [Authorize] Endpoint
+GET {{PersonalBudgetTrackerAPI_HostAddress}}/api/Categories
+Authorization: Bearer {{Token}}
+
+### 6. Access an [Authorize(Roles = "Admin")] Endpoint
+POST {{PersonalBudgetTrackerAPI_HostAddress}}/api/Categories
+Authorization: Bearer {{Token}}
+Content-Type: application/json
+
+{
+    "name": "Salary",
+    "description": "Monthly income"
+}

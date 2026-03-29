@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,8 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using PersonalBudgetTrackerAPI.DatabaseContext;
 using PersonalBudgetTrackerAPI.Models;
 
+using Microsoft.AspNetCore.Authorization;
+
 namespace PersonalBudgetTrackerAPI.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class TransactionPartnersController : ControllerBase
@@ -43,6 +46,7 @@ namespace PersonalBudgetTrackerAPI.Controllers
         }
 
         // PUT: api/TransactionPartners/5
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTransactionPartner(Guid id, TransactionPartner transactionPartner)
         {
@@ -73,6 +77,7 @@ namespace PersonalBudgetTrackerAPI.Controllers
         }
 
         // POST: api/TransactionPartners
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult<TransactionPartner>> PostTransactionPartner(TransactionPartner transactionPartner)
         {
@@ -83,6 +88,7 @@ namespace PersonalBudgetTrackerAPI.Controllers
         }
 
         // DELETE: api/TransactionPartners/5
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTransactionPartner(Guid id)
         {
