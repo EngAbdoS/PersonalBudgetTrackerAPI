@@ -1,12 +1,35 @@
-# Visual Studio
-.vs/
-
 # Build results
 bin/
 obj/
+*.dll
+*.exe
+*.pdb
+*.deps.json
 
-# User-specific files
-*.user
+# Visual Studio cache/options
+.vs/
+.vscode/
 *.suo
+*.user
 *.userosscache
 *.sln.docstates
+
+# NuGet
+*.nuget.props
+*.nuget.targets
+project.lock.json
+project.assets.json
+*.nuget.cache
+
+# Build folders
+publish/
+PublishProfiles/
+
+# IDE
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
