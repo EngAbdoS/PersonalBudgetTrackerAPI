@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using FluentValidation;
 using PersonalBudgetTrackerAPI;
 using PersonalBudgetTrackerAPI.Authorization.Handlers;
 using PersonalBudgetTrackerAPI.Authorization.Policies;
@@ -13,6 +14,7 @@ using PersonalBudgetTrackerAPI.Services.Implementations;
 using PersonalBudgetTrackerAPI.Services.Interfaces;
 using Scalar.AspNetCore;
 using System.Text;
+using FluentValidation.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -67,6 +69,11 @@ builder.Services.AddAuthorizationBuilder()
     });
 
 builder.Services.AddControllers();
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+
+
+
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
