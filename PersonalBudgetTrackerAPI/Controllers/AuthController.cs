@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using PersonalBudgetTrackerAPI.Models;
+using PersonalBudgetTrackerAPI.DTOs.Auth;
+using PersonalBudgetTrackerAPI.Identity;
 using PersonalBudgetTrackerAPI.Models.Auth;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -29,7 +30,7 @@ namespace PersonalBudgetTrackerAPI.Controllers
         {
             var userExists = await _userManager.FindByNameAsync(model.Username);
             if (userExists != null)
-                return StatusCode(StatusCodes.Status500InternalServerError, new AuthResponseDto { Message = "User already exists!" });
+                return StatusCode(StatusCodes.Status500InternalServerError, new AuthResponse { Message = "User already exists!" });
 
             ApplicationUser user = new()
             {
@@ -40,9 +41,9 @@ namespace PersonalBudgetTrackerAPI.Controllers
             };
             var result = await _userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)
-                return StatusCode(StatusCodes.Status500InternalServerError, new AuthResponseDto { Message = "User creation failed! Please check user details and try again." });
+                return StatusCode(StatusCodes.Status500InternalServerError, new AuthResponse { Message = "User creation failed! Please check user details and try again." });
 
-            return Ok(new AuthResponseDto { Message = "User created successfully!" });
+            return Ok(new AuthResponse { Message = "User created successfully!" });
         }
 
         [HttpPost("login")]
@@ -66,10 +67,11 @@ namespace PersonalBudgetTrackerAPI.Controllers
 
                 var token = GetToken(authClaims);
 
-                return Ok(new
+                return Ok(new AuthResponse
                 {
-                    token = new JwtSecurityTokenHandler().WriteToken(token),
-                    expiration = token.ValidTo
+                    Token = new JwtSecurityTokenHandler().WriteToken(token),
+                    Message = "Login successful!"
+                    // expiration = token.ValidTo
                 });
             }
             return Unauthorized();
@@ -85,14 +87,14 @@ namespace PersonalBudgetTrackerAPI.Controllers
 
                 if (roleResult.Succeeded)
                 {
-                    return Ok(new AuthResponseDto { Message = $"Role {model.RoleName} added successfully" });
+                    return Ok(new AuthResponse { Message = $"Role {model.RoleName} added successfully" });
                 }
                 else
                 {
-                    return StatusCode(StatusCodes.Status500InternalServerError, new AuthResponseDto { Message = $"Issue adding the new {model.RoleName} role" });
+                    return StatusCode(StatusCodes.Status500InternalServerError, new AuthResponse { Message = $"Issue adding the new {model.RoleName} role" });
                 }
             }
-            return BadRequest(new AuthResponseDto { Message = "Role already exists" });
+            return BadRequest(new AuthResponse { Message = "Role already exists" });
         }
 
         [HttpPost("assign-role")]
@@ -101,22 +103,22 @@ namespace PersonalBudgetTrackerAPI.Controllers
             var user = await _userManager.FindByNameAsync(model.Username);
             if (user == null)
             {
-                return BadRequest(new AuthResponseDto { Message = "User not found" });
+                return BadRequest(new AuthResponse { Message = "User not found" });
             }
 
             var roleExists = await _roleManager.RoleExistsAsync(model.RoleName);
             if (!roleExists)
             {
-                return BadRequest(new AuthResponseDto { Message = "Role not found" });
+                return BadRequest(new AuthResponse { Message = "Role not found" });
             }
 
             var result = await _userManager.AddToRoleAsync(user, model.RoleName);
             if (result.Succeeded)
             {
-                return Ok(new AuthResponseDto { Message = $"Role {model.RoleName} assigned to user {model.Username} successfully" });
+                return Ok(new AuthResponse { Message = $"Role {model.RoleName} assigned to user {model.Username} successfully" });
             }
 
-            return BadRequest(new AuthResponseDto { Message = "Failed to assign role" });
+            return BadRequest(new AuthResponse { Message = "Failed to assign role" });
         }
 
         private JwtSecurityToken GetToken(List<Claim> authClaims)

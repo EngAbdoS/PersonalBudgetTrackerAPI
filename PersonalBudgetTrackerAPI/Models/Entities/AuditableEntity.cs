@@ -1,4 +1,4 @@
-﻿namespace PersonalBudgetTrackerAPI.Models
+﻿namespace PersonalBudgetTrackerAPI.Models.Entities
 {
     public class AuditableEntity
     {

@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PersonalBudgetTrackerAPI.DatabaseContext;
-using PersonalBudgetTrackerAPI.Models;
 
 using Microsoft.AspNetCore.Authorization;
+using PersonalBudgetTrackerAPI.Models.Entities;
 
 namespace PersonalBudgetTrackerAPI.Controllers
 {

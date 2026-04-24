@@ -5,8 +5,8 @@ using Microsoft.IdentityModel.Tokens;
 using PersonalBudgetTrackerAPI;
 using Scalar.AspNetCore;
 using PersonalBudgetTrackerAPI.DatabaseContext;
-using PersonalBudgetTrackerAPI.Models;
 using System.Text;
+using PersonalBudgetTrackerAPI.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 

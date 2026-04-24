@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace PersonalBudgetTrackerAPI.Models
+namespace PersonalBudgetTrackerAPI.Models.Entities
 {
     public class Reason
     {

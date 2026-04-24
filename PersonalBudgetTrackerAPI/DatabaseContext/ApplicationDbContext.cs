@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using PersonalBudgetTrackerAPI.Models;
+using PersonalBudgetTrackerAPI.Identity;
+using PersonalBudgetTrackerAPI.Models.Entities;
 
 namespace PersonalBudgetTrackerAPI.DatabaseContext
 {

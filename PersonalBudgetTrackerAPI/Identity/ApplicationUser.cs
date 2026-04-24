@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 
-namespace PersonalBudgetTrackerAPI.Models
+namespace PersonalBudgetTrackerAPI.Identity
 {
     public class ApplicationUser : IdentityUser
     {

@@ -1,5 +1,6 @@
 ﻿using PersonalBudgetTrackerAPI.DatabaseContext;
 using PersonalBudgetTrackerAPI.Models;
+using PersonalBudgetTrackerAPI.Models.Entities;
 
 namespace PersonalBudgetTrackerAPI
 {
