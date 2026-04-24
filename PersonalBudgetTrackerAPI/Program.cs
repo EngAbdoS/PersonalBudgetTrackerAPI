@@ -24,7 +24,15 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddTransient<IJwtService, JwtService>();
 builder.Services.AddScoped<IAuthorizationHandler, DbRoleHandler>();
 // For Identity
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(
+     options =>
+     {
+         options.Password.RequiredLength = 6;
+         options.Password.RequireDigit = true;
+         options.Password.RequireNonAlphanumeric = true;
+         options.Password.RequireUppercase = true;
+         options.Password.RequireLowercase = true;
+     })
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
@@ -32,8 +40,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+
 }).AddJwtBearer(options =>
 {
     options.SaveToken = true;
