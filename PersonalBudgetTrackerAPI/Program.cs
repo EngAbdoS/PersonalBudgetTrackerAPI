@@ -7,6 +7,8 @@ using Scalar.AspNetCore;
 using PersonalBudgetTrackerAPI.DatabaseContext;
 using System.Text;
 using PersonalBudgetTrackerAPI.Identity;
+using PersonalBudgetTrackerAPI.Services.Interfaces;
+using PersonalBudgetTrackerAPI.Services.Implementations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +16,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
 });
+
+builder.Services.AddTransient<IJwtService, JwtService>();
 
 // For Identity
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
