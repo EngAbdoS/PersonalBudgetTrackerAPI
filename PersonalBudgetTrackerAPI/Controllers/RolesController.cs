@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using PersonalBudgetTrackerAPI.Authorization.Policies;
 using PersonalBudgetTrackerAPI.DTOs.Auth;
 
 namespace PersonalBudgetTrackerAPI.Controllers
 {
     [Authorize(Roles = "Admin")]
+    [Authorize(Policy = PolicyNames.AdminFromDb)]
     [Route("api/[controller]")]
     [ApiController]
     public class RolesController : ControllerBase

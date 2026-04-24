@@ -1,14 +1,18 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using PersonalBudgetTrackerAPI;
-using Scalar.AspNetCore;
+using PersonalBudgetTrackerAPI.Authorization.Handlers;
+using PersonalBudgetTrackerAPI.Authorization.Policies;
+using PersonalBudgetTrackerAPI.Authorization.Requirements;
 using PersonalBudgetTrackerAPI.DatabaseContext;
-using System.Text;
 using PersonalBudgetTrackerAPI.Identity;
-using PersonalBudgetTrackerAPI.Services.Interfaces;
 using PersonalBudgetTrackerAPI.Services.Implementations;
+using PersonalBudgetTrackerAPI.Services.Interfaces;
+using Scalar.AspNetCore;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +22,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 });
 
 builder.Services.AddTransient<IJwtService, JwtService>();
-
+builder.Services.AddScoped<IAuthorizationHandler, DbRoleHandler>();
 // For Identity
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -30,10 +34,7 @@ builder.Services.AddAuthentication(options =>
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-
-// Adding Jwt Bearer
-.AddJwtBearer(options =>
+}).AddJwtBearer(options =>
 {
     options.SaveToken = true;
     options.RequireHttpsMetadata = false;
@@ -46,6 +47,17 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
     };
 });
+
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy(PolicyNames.AdminFromDb, policy =>
+    {
+        /*
+        good when access token have long expiration time 
+        useless with short lived access token with refresh token 
+        */
+        policy.RequireAuthenticatedUser();
+        policy.AddRequirements(new DbRoleRequirement("Admin"));
+    });
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
