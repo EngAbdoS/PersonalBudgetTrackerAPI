@@ -38,13 +38,15 @@ namespace PersonalBudgetTrackerAPI.Controllers
                 Email = model.Email,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 UserName = model.Username,
-                FullName = model.FullName
+                FullName = model.FullName,
             };
             var result = await _userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)
                 return StatusCode(StatusCodes.Status500InternalServerError, new AuthResponse { Message = "User creation failed! Please check user details and try again." });
 
-            return Ok(new AuthResponse { Message = "User created successfully!" });
+            var tokenResponse = await _jwtService.GenerateJWT(user);
+
+            return Ok(tokenResponse);
         }
 
         [HttpPost("login")]
