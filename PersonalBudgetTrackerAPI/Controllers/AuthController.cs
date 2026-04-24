@@ -77,50 +77,6 @@ namespace PersonalBudgetTrackerAPI.Controllers
             return Unauthorized();
         }
 
-        [HttpPost("create-role")]
-        public async Task<IActionResult> CreateRole([FromBody] RoleDto model)
-        {
-            var roleExists = await _roleManager.RoleExistsAsync(model.RoleName);
-            if (!roleExists)
-            {
-                var roleResult = await _roleManager.CreateAsync(new IdentityRole(model.RoleName));
-
-                if (roleResult.Succeeded)
-                {
-                    return Ok(new AuthResponse { Message = $"Role {model.RoleName} added successfully" });
-                }
-                else
-                {
-                    return StatusCode(StatusCodes.Status500InternalServerError, new AuthResponse { Message = $"Issue adding the new {model.RoleName} role" });
-                }
-            }
-            return BadRequest(new AuthResponse { Message = "Role already exists" });
-        }
-
-        [HttpPost("assign-role")]
-        public async Task<IActionResult> AssignRole([FromBody] AssignRoleDto model)
-        {
-            var user = await _userManager.FindByNameAsync(model.Username);
-            if (user == null)
-            {
-                return BadRequest(new AuthResponse { Message = "User not found" });
-            }
-
-            var roleExists = await _roleManager.RoleExistsAsync(model.RoleName);
-            if (!roleExists)
-            {
-                return BadRequest(new AuthResponse { Message = "Role not found" });
-            }
-
-            var result = await _userManager.AddToRoleAsync(user, model.RoleName);
-            if (result.Succeeded)
-            {
-                return Ok(new AuthResponse { Message = $"Role {model.RoleName} assigned to user {model.Username} successfully" });
-            }
-
-            return BadRequest(new AuthResponse { Message = "Failed to assign role" });
-        }
-
         private JwtSecurityToken GetToken(List<Claim> authClaims)
         {
             var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
