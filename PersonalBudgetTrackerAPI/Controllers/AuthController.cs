@@ -30,8 +30,9 @@ namespace PersonalBudgetTrackerAPI.Controllers
         public async Task<IActionResult> Register([FromBody] RegisterDto model)
         {
             var userExists = await _userManager.FindByNameAsync(model.Username);
-            if (userExists != null)
-                return StatusCode(StatusCodes.Status500InternalServerError, new AuthResponse { Message = "User already exists!" });
+            var emailExists = await _userManager.FindByEmailAsync(model.Email);
+            if (userExists != null || emailExists != null)
+                return StatusCode(StatusCodes.Status500InternalServerError, new AuthResponse { Message = "User or email already exists!" });
 
             ApplicationUser user = new()
             {
