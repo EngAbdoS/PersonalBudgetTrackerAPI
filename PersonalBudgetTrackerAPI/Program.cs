@@ -1,9 +1,10 @@
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using FluentValidation;
 using PersonalBudgetTrackerAPI;
 using PersonalBudgetTrackerAPI.Authorization.Handlers;
 using PersonalBudgetTrackerAPI.Authorization.Policies;
@@ -13,8 +14,8 @@ using PersonalBudgetTrackerAPI.Identity;
 using PersonalBudgetTrackerAPI.Services.Implementations;
 using PersonalBudgetTrackerAPI.Services.Interfaces;
 using Scalar.AspNetCore;
+using StackExchange.Redis;
 using System.Text;
-using FluentValidation.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +24,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
 });
 
+builder.Services.AddSingleton<IConnectionMultiplexer>(
+    ConnectionMultiplexer.Connect(builder.Configuration["Redis:ConnectionString"]!)
+);
+
+builder.Services.AddScoped<ITokenStore, RedisTokenStore>();
 builder.Services.AddTransient<IJwtService, JwtService>();
 builder.Services.AddScoped<IAuthorizationHandler, DbRoleHandler>();
 // For Identity

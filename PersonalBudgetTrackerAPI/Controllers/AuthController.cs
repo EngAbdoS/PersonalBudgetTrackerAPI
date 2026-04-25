@@ -1,14 +1,12 @@
+using Humanizer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using PersonalBudgetTrackerAPI.DTOs.Auth;
 using PersonalBudgetTrackerAPI.Identity;
 using PersonalBudgetTrackerAPI.Models.Auth;
 using PersonalBudgetTrackerAPI.Services.Interfaces;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
 
 namespace PersonalBudgetTrackerAPI.Controllers
 {
@@ -19,11 +17,13 @@ namespace PersonalBudgetTrackerAPI.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IJwtService _jwtService;           
+        private readonly ITokenStore _tokenStore;
 
-        public AuthController(UserManager<ApplicationUser> userManager, IJwtService jwtService)
+        public AuthController(UserManager<ApplicationUser> userManager, IJwtService jwtService, ITokenStore tokenStore)
         {
             _userManager = userManager;
             _jwtService = jwtService;
+            _tokenStore = tokenStore;
         }
 
         [HttpPost("register")]
@@ -46,6 +46,9 @@ namespace PersonalBudgetTrackerAPI.Controllers
 
             var tokenResponse = await _jwtService.GenerateJWT(user);
 
+            await _tokenStore.StoreRefreshToken(user.Id.ToString(),tokenResponse.RefreshToken);
+
+
             return Ok(tokenResponse);
         }
 
@@ -58,9 +61,48 @@ namespace PersonalBudgetTrackerAPI.Controllers
             {
                 var tokenResponse = await _jwtService.GenerateJWT(user);
 
+                await _tokenStore.StoreRefreshToken(user.Id.ToString(), tokenResponse.RefreshToken);
+
                 return Ok(tokenResponse);
             }
             return Unauthorized();
+        }
+
+
+        [HttpPost("refresh")]
+        public async Task<IActionResult> GenerateAccessToken([FromBody] TokenModelDto tokenModel)
+        {
+            if (tokenModel == null)
+            {
+                return BadRequest("Invalid client request");
+            }
+
+            ClaimsPrincipal? principal = _jwtService.GetPrincipalFromJWTToken(tokenModel.Token);
+            if (principal == null)
+            { return BadRequest("invalid jwt access token "); }
+
+
+            string email = principal.FindFirstValue(ClaimTypes.Email) ?? string.Empty;
+            ApplicationUser? user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                return BadRequest("Invalid access token");
+            }
+            var isValid = await _tokenStore.ValidateRefreshToken(user.Id, tokenModel.RefreshToken??"");
+
+
+            if (!isValid)
+            {
+                return BadRequest("Invalid refresh token");
+            }
+
+            var tokenResponse = await _jwtService.GenerateJWT(user);
+
+            await _tokenStore.StoreRefreshToken(user.Id.ToString(), tokenResponse.RefreshToken);
+
+
+            return Ok(tokenResponse);
+
         }
 
 
