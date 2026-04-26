@@ -2,7 +2,7 @@
 
 namespace PersonalBudgetTrackerAPI.Models.Entities
 {
-    public class Reason
+    public class Reason : AuditableEntity
     {
         [Key]
         [Required]

@@ -46,9 +46,9 @@ namespace PersonalBudgetTrackerAPI.Controllers
         }
 
         // PUT: api/Reasons/5
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutReason(Guid id, Reason reason)
+        public async Task<IActionResult> PutReason([FromRoute] Guid id, [FromBody] Reason reason)
         {
             if (id != reason.Id)
             {
@@ -77,7 +77,7 @@ namespace PersonalBudgetTrackerAPI.Controllers
         }
 
         // POST: api/Reasons
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult<Reason>> PostReason(Reason reason)
         {
@@ -88,7 +88,7 @@ namespace PersonalBudgetTrackerAPI.Controllers
         }
 
         // DELETE: api/Reasons/5
-        [Authorize(Roles = "Admin")]
+        ///[Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteReason(Guid id)
         {

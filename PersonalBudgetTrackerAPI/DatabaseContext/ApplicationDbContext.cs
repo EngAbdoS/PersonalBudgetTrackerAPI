@@ -2,19 +2,18 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using PersonalBudgetTrackerAPI.Identity;
 using PersonalBudgetTrackerAPI.Models.Entities;
+using PersonalBudgetTrackerAPI.Services.Interfaces;
 
 namespace PersonalBudgetTrackerAPI.DatabaseContext
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
+        private readonly ICurrentUserService _currentUserService;
 
-        public ApplicationDbContext(DbContextOptions options) : base(options)
+
+        public ApplicationDbContext(DbContextOptions options, ICurrentUserService currentUserService) : base(options)
         {
-
-        }
-        public ApplicationDbContext()
-        {
-
+            _currentUserService = currentUserService;
         }
 
         public DbSet<Transaction> Transactions { get; set; }
@@ -62,13 +61,13 @@ namespace PersonalBudgetTrackerAPI.DatabaseContext
                             e.State == EntityState.Modified ||
                             e.State == EntityState.Deleted));
 
+            var currentUser = _currentUserService.UserId ?? "SYSTEM";
+            var now = DateTime.UtcNow;
+
             foreach (var entry in entries)
             {
                 var entity = (AuditableEntity)entry.Entity;
-
-                var currentUser = "System";
-                var now = DateTime.UtcNow;
-
+             
                 if (entry.State == EntityState.Added)
                 {
                     entity.CreatedAt = now;
@@ -90,5 +89,6 @@ namespace PersonalBudgetTrackerAPI.DatabaseContext
                 }
             }
         }
+
     }
 }
