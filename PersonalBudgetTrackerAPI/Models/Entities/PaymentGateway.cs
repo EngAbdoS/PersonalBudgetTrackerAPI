@@ -2,7 +2,7 @@
 
 namespace PersonalBudgetTrackerAPI.Models.Entities
 {
-    public class PaymentGateway
+    public class PaymentGateway : AuditableEntity
     {
         [Key]
         [Required]

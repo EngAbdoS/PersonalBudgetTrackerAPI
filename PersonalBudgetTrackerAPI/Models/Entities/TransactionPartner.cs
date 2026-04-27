@@ -2,7 +2,7 @@
 
 namespace PersonalBudgetTrackerAPI.Models.Entities
 {
-    public class TransactionPartner
+    public class TransactionPartner : AuditableEntity
     {
         [Key]
         [Required]

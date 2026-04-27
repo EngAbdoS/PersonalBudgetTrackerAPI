@@ -2,7 +2,7 @@
 
 namespace PersonalBudgetTrackerAPI.Models.Entities
 {
-    public class Category
+    public class Category : AuditableEntity
     {
         [Key]
         [Required]
@@ -14,7 +14,6 @@ namespace PersonalBudgetTrackerAPI.Models.Entities
         public required string Details { get; set; }
         [Required]
         public bool IsNeedful { get; set; }
-
         [Required]
         public decimal NeedPriority { get; set; }
 
