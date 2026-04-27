@@ -1,4 +1,5 @@
-﻿using PersonalBudgetTrackerAPI.DatabaseContext;
+﻿using Microsoft.EntityFrameworkCore;
+using PersonalBudgetTrackerAPI.DatabaseContext;
 using PersonalBudgetTrackerAPI.Models;
 using PersonalBudgetTrackerAPI.Models.Entities;
 
@@ -10,7 +11,7 @@ namespace PersonalBudgetTrackerAPI
         {
             var context = serviceProvider.GetRequiredService<ApplicationDbContext>();
 
-            context.Database.EnsureCreated();
+            context.Database.Migrate();
 
 
             if (!context.Category.Any()) // seeding some categories 
