@@ -32,97 +32,21 @@ namespace PersonalBudgetTrackerAPI.Controllers
             return Ok(ApiResponse<PagedResult<ReasonDetailsDto>>.Ok(result, "Reasons retrieved successfully."));
         }
 
-        // GET: api/Reasons?page=2&pageSize=5
+        // GET: api/Reasons?search=example&page=2&pageSize=5
         [HttpGet]
-        public async Task<ActionResult<ApiResponse<PagedResult<ReasonDto>>>> GetReason([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+        public async Task<ActionResult<ApiResponse<PagedResult<ReasonDto>>>> GetReasons(
+        [FromQuery] string? search,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10)
         {
-            var result = await _reasonService.GetUserReasonsAsync(page, pageSize);
-            return Ok(ApiResponse<PagedResult<ReasonDto>>.Ok(result, "Reasons retrieved successfully."));
+            var result = string.IsNullOrWhiteSpace(search)
+                ? await _reasonService.GetUserReasonsAsync(page, pageSize)
+                : await _reasonService.SearchReasonsAsync(search, page, pageSize);
+
+            return Ok(ApiResponse<PagedResult<ReasonDto>>
+                .Ok(result, "Reasons retrieved successfully."));
         }
 
 
-
-
-
-
-
-
-
-        // GET: api/Reasons/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Reason>> GetReason(Guid id)
-        {
-            var reason = await _context.Reason.FindAsync(id);
-
-            if (reason == null)
-            {
-                return NotFound();
-            }
-
-            return reason;
-        }
-
-        // PUT: api/Reasons/5
-        //[Authorize(Roles = "Admin")]
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutReason([FromRoute] Guid id, [FromBody] Reason reason)
-        {
-            if (id != reason.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(reason).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ReasonExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // POST: api/Reasons
-        //[Authorize(Roles = "Admin")]
-        [HttpPost]
-        public async Task<ActionResult<Reason>> PostReason([FromBody]  String reasonDetails) // will be removed , adding reason in transaction creation
-        {
-           var reason = await _reasonService.CreateReasonAsync(reasonDetails);
-
-            return CreatedAtAction("GetReason", new { id = reason.ReasonId }, reason);
-        }
-
-        // DELETE: api/Reasons/5
-        ///[Authorize(Roles = "Admin")]
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteReason(Guid id)
-        {
-            var reason = await _context.Reason.FindAsync(id);
-            if (reason == null)
-            {
-                return NotFound();
-            }
-
-            _context.Reason.Remove(reason);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool ReasonExists(Guid id)
-        {
-            return _context.Reason.Any(e => e.Id == id);
-        }
     }
 }

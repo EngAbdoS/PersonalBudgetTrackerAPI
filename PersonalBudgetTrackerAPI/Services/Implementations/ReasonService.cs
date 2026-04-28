@@ -19,7 +19,8 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
         }
 
 
-        public async Task<ReasonDto> CreateReasonAsync(string ReasonDetails) {
+        public async Task<ReasonDto> CreateReasonAsync(string ReasonDetails)
+        {
             var reason = new Reason
             {
                 Id = Guid.NewGuid(),
@@ -32,7 +33,7 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
                 ReasonId = reason.Id,
                 ReasonDetails = reason.ReasonDetails
             };
-            }
+        }
 
         public async Task<PagedResult<ReasonDetailsDto>> GetReasonsWithDetailsAsync(int page, int pageSize)
         {
@@ -54,7 +55,7 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
                 throw new NotFoundException("there is no any used reasons");
 
             }
-        
+
             var items = await query
                               .Skip((page - 1) * pageSize)
                               .Take(pageSize)
@@ -74,6 +75,7 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
         {
 
             var query = _context.Reason
+                .OrderByDescending(r => r.Id)
                 .Select(r => new ReasonDto
                 {
                     ReasonId = r.Id,
@@ -102,9 +104,38 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
 
         }
 
-        public Task<List<ReasonDto>> SearchReasonsAsync(string query)
+        public async Task<PagedResult<ReasonDto>> SearchReasonsAsync(string queryText , int page, int pageSize)
         {
-            throw new NotImplementedException();
+            var query = _context.Reason
+            .Where(r => r.ReasonDetails.ToLower().Contains(queryText.ToLower()))
+            .OrderByDescending(r => r.Id)
+            .Select(r => new ReasonDto
+            {
+                ReasonId = r.Id,
+                ReasonDetails = r.ReasonDetails
+            });
+
+            var totalCount = await query.CountAsync();
+
+            if (totalCount < 1)
+            {
+                throw new NotFoundException("reason not found");
+
+            }
+
+            var items = await query
+                                 .Skip((page - 1) * pageSize)
+                                 .Take(pageSize)
+                                 .ToListAsync();
+
+            return new PagedResult<ReasonDto>
+            {
+                Items = items,
+                TotalCount = totalCount,
+                Page = page,
+                PageSize = pageSize
+            };
+
         }
     }
 }

@@ -13,7 +13,7 @@ namespace PersonalBudgetTrackerAPI.Services.Interfaces
 
         Task<PagedResult<ReasonDetailsDto>> GetReasonsWithDetailsAsync(int page, int pageSize);
 
-        Task<List<ReasonDto>> SearchReasonsAsync(string query);
+        Task<PagedResult<ReasonDto>> SearchReasonsAsync(string query, int page, int pageSize);
 
     }
 }
