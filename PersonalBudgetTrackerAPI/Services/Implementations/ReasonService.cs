@@ -1,4 +1,6 @@
-﻿using PersonalBudgetTrackerAPI.Common;
+﻿using Microsoft.EntityFrameworkCore;
+using PersonalBudgetTrackerAPI.Common;
+using PersonalBudgetTrackerAPI.Common.Exceptions;
 using PersonalBudgetTrackerAPI.DatabaseContext;
 using PersonalBudgetTrackerAPI.DTOs.Entities.ReasonDTOs;
 using PersonalBudgetTrackerAPI.Models.Entities;
@@ -31,9 +33,40 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
             };
             }
 
-        public Task<List<ReasonDetailsDto>> GetReasonsWithDetailsAsync()
+        public async Task<PagedResult<ReasonDetailsDto>> GetReasonsWithDetailsAsync(int page, int pageSize)
         {
-            throw new NotImplementedException();
+
+            var query = _context.Set<Income>()
+               .GroupBy(i => new { i.ReasonId, i.Reason.ReasonDetails })
+               .Select(g => new ReasonDetailsDto
+               {
+                   ReasonId = g.Key.ReasonId,
+                   ReasonDetails = g.Key.ReasonDetails,
+                   UsageCount = g.Count(),
+                   TotalIncome = g.Sum(i => i.Amount)
+               }).OrderByDescending(x => x.UsageCount);
+
+            var totalCount = await query.CountAsync();
+
+            if (totalCount < 1)
+            {
+                throw new NotFoundException("there is no any used reasons");
+
+            }
+        
+            var items = await query
+                              .Skip((page - 1) * pageSize)
+                              .Take(pageSize)
+                              .ToListAsync();
+
+            return new PagedResult<ReasonDetailsDto>
+            {
+                Items = items,
+                TotalCount = totalCount,
+                Page = page,
+                PageSize = pageSize
+            };
+
         }
 
         public Task<PagedResult<ReasonDto>> GetUserReasonsAsync(int page, int pageSize)

@@ -1,15 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PersonalBudgetTrackerAPI.DatabaseContext;
-
 using Microsoft.AspNetCore.Authorization;
 using PersonalBudgetTrackerAPI.Models.Entities;
 using PersonalBudgetTrackerAPI.Services.Interfaces;
+using PersonalBudgetTrackerAPI.Common;
+using PersonalBudgetTrackerAPI.DTOs.Entities.ReasonDTOs;
 
 namespace PersonalBudgetTrackerAPI.Controllers
 {
@@ -26,6 +23,19 @@ namespace PersonalBudgetTrackerAPI.Controllers
             _context = context;
             _reasonService = reasonService;
         }
+
+        // GET: api/Reasons/details?page=2&pageSize=5
+        [HttpGet("details")]
+        public async Task<ActionResult<ApiResponse<PagedResult<ReasonDetailsDto>>>> GetReasonsWithDetails([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+        {
+            var result = await _reasonService.GetReasonsWithDetailsAsync(page, pageSize);
+            return Ok(ApiResponse<PagedResult<ReasonDetailsDto>>.Ok(result, "Reasons retrieved successfully."));
+        }
+
+
+
+
+
 
         // GET: api/Reasons
         [HttpGet]

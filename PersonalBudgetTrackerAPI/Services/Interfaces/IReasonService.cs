@@ -11,7 +11,7 @@ namespace PersonalBudgetTrackerAPI.Services.Interfaces
 
         Task<PagedResult<ReasonDto>> GetUserReasonsAsync(int page, int pageSize);
 
-        Task<List<ReasonDetailsDto>> GetReasonsWithDetailsAsync();
+        Task<PagedResult<ReasonDetailsDto>> GetReasonsWithDetailsAsync(int page, int pageSize);
 
         Task<List<ReasonDto>> SearchReasonsAsync(string query);
 
