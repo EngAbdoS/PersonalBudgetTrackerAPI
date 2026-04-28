@@ -32,17 +32,21 @@ namespace PersonalBudgetTrackerAPI.Controllers
             return Ok(ApiResponse<PagedResult<ReasonDetailsDto>>.Ok(result, "Reasons retrieved successfully."));
         }
 
-
-
-
-
-
-        // GET: api/Reasons
+        // GET: api/Reasons?page=2&pageSize=5
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Reason>>> GetReason()
+        public async Task<ActionResult<ApiResponse<PagedResult<ReasonDto>>>> GetReason([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
-            return await _context.Reason.ToListAsync();
+            var result = await _reasonService.GetUserReasonsAsync(page, pageSize);
+            return Ok(ApiResponse<PagedResult<ReasonDto>>.Ok(result, "Reasons retrieved successfully."));
         }
+
+
+
+
+
+
+
+
 
         // GET: api/Reasons/5
         [HttpGet("{id}")]
