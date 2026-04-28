@@ -11,6 +11,7 @@ using PersonalBudgetTrackerAPI.Authorization.Policies;
 using PersonalBudgetTrackerAPI.Authorization.Requirements;
 using PersonalBudgetTrackerAPI.DatabaseContext;
 using PersonalBudgetTrackerAPI.Identity;
+using PersonalBudgetTrackerAPI.Middleware;
 using PersonalBudgetTrackerAPI.Services.Implementations;
 using PersonalBudgetTrackerAPI.Services.Interfaces;
 using Scalar.AspNetCore;
@@ -78,6 +79,8 @@ builder.Services.AddAuthorizationBuilder()
     });
 
 builder.Services.AddControllers();
+
+builder.Services.AddProblemDetails();
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
@@ -104,10 +107,15 @@ using (var scope = app.Services.CreateScope())
 
 app.UseHttpsRedirection();
 
+
+app.UseMiddleware<ExceptionMiddleware>();
+
+
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
 
 app.Run();
 
