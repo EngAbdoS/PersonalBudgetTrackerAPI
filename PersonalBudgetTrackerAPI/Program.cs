@@ -85,6 +85,8 @@ builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
 
+builder.Services.AddScoped<IReasonService, ReasonService>();
+
 
 builder.Services.AddOpenApi();
 

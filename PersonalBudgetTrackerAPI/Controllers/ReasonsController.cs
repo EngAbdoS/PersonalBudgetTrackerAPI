@@ -9,6 +9,7 @@ using PersonalBudgetTrackerAPI.DatabaseContext;
 
 using Microsoft.AspNetCore.Authorization;
 using PersonalBudgetTrackerAPI.Models.Entities;
+using PersonalBudgetTrackerAPI.Services.Interfaces;
 
 namespace PersonalBudgetTrackerAPI.Controllers
 {
@@ -18,10 +19,12 @@ namespace PersonalBudgetTrackerAPI.Controllers
     public class ReasonsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly IReasonService _reasonService;     
 
-        public ReasonsController(ApplicationDbContext context)
+        public ReasonsController(ApplicationDbContext context, IReasonService reasonService)
         {
             _context = context;
+            _reasonService = reasonService;
         }
 
         // GET: api/Reasons
@@ -79,12 +82,11 @@ namespace PersonalBudgetTrackerAPI.Controllers
         // POST: api/Reasons
         //[Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<ActionResult<Reason>> PostReason(Reason reason)
+        public async Task<ActionResult<Reason>> PostReason([FromBody]  String reasonDetails) // will be removed , adding reason in transaction creation
         {
-            _context.Reason.Add(reason);
-            await _context.SaveChangesAsync();
+           var reason = await _reasonService.CreateReasonAsync(reasonDetails);
 
-            return CreatedAtAction("GetReason", new { id = reason.Id }, reason);
+            return CreatedAtAction("GetReason", new { id = reason.ReasonId }, reason);
         }
 
         // DELETE: api/Reasons/5
