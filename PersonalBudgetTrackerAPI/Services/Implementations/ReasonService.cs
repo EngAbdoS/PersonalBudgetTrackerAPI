@@ -35,6 +35,12 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
             };
         }
 
+        public async Task<bool> ReasonValidAndExist(Guid reasonId)
+        {
+            return await _context.Reason
+                .AnyAsync(r => r.Id == reasonId && !r.IsDeleted);
+        }
+
         public async Task<PagedResult<ReasonDetailsDto>> GetReasonsWithDetailsAsync(int page, int pageSize)
         {
 

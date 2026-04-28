@@ -7,6 +7,8 @@ namespace PersonalBudgetTrackerAPI.Services.Interfaces
     public interface IReasonService
     {
 
+        Task<bool> ReasonValidAndExist(Guid reasonId);
+
         Task<ReasonDto> CreateReasonAsync(string ReasonDetails); 
 
         Task<PagedResult<ReasonDto>> GetUserReasonsAsync(int page, int pageSize);
