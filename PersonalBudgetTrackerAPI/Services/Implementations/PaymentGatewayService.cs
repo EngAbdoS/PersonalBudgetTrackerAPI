@@ -1,28 +1,83 @@
-﻿using PersonalBudgetTrackerAPI.DTOs.Entities.PaymentGatewayDtos;
+﻿using Microsoft.EntityFrameworkCore;
+using PersonalBudgetTrackerAPI.Common.Exceptions;
+using PersonalBudgetTrackerAPI.DatabaseContext;
+using PersonalBudgetTrackerAPI.DTOs.Entities.PaymentGatewayDtos;
+using PersonalBudgetTrackerAPI.Models.Entities;
 using PersonalBudgetTrackerAPI.Services.Interfaces;
 
 namespace PersonalBudgetTrackerAPI.Services.Implementations
 {
     public class PaymentGatewayService : IPaymentGatewayService
     {
-        public Task<PaymentGatewayDto> CreateAsync(CreatePaymentGatewayDto dto)
+        private readonly ApplicationDbContext _context;
+
+        public PaymentGatewayService(ApplicationDbContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
         }
 
-        public Task<PaymentGatewayDetailsDto> GetDetailsByIdAsync(Guid id)
+        public async Task<bool> PaymentGatewayValidAndExist(Guid id)
         {
-            throw new NotImplementedException();
+            return await _context.PaymentGateway
+                .AnyAsync(p => p.Id == id && !p.IsDeleted && p.ExpirationDate > DateTime.UtcNow);
+        }
+        public async Task<PaymentGatewayDto> CreateAsync(CreatePaymentGatewayDto dto)
+        {
+            var gateway = new PaymentGateway
+            {
+                Id = Guid.NewGuid(),
+                Title = dto.Title,
+                Description = dto.Description,
+                BankName = dto.BankName,
+                PaymentGatewayType = dto.PaymentGatewayType,
+                InitialBalance = dto.InitialBalance,
+                ExpirationDate = dto.ExpirationDate
+            };
+
+            _context.PaymentGateway.Add(gateway);
+            await _context.SaveChangesAsync();
+
+            return gateway.ToDto();
+        }
+        public async Task<List<PaymentGatewayDto>> GetUserPaymentGatewaysAsync()
+        {
+            var gateways = await _context.PaymentGateway
+                .OrderByDescending(p => p.InitialBalance)
+                .ToListAsync();
+
+            return gateways.Select(g => g.ToDto()).ToList() ?? [];
         }
 
-        public Task<List<PaymentGatewayDto>> GetUserPaymentGatewaysAsync()
+        public async Task<PaymentGatewayDetailsDto> GetDetailsByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var gateway = await _context.PaymentGateway
+                .FirstOrDefaultAsync(p => p.Id == id)
+                ?? throw new NotFoundException("Payment gateway not found");
+
+            var income = await _context.Set<Income>()
+                .Where(i => i.PaymentGatewayId == id)
+                .SumAsync(i => (decimal?)i.Amount) ?? 0;
+
+            var expense = await _context.Set<Expense>()
+                .Where(e => e.PaymentGatewayId == id)
+                .SumAsync(e => (decimal?)e.Amount) ?? 0;
+
+            var usage = await _context.Set<Transaction>()
+                .CountAsync(t => t.PaymentGatewayId == id);
+
+            return new PaymentGatewayDetailsDto
+            {
+                Id = gateway.Id,
+                Title = gateway.Title,
+                UsageCount = usage,
+                TotalIncome = income,
+                TotalExpense = expense,
+                CurrentBalance = gateway.InitialBalance + income - expense
+            };
         }
 
-        public Task<bool> PaymentGatewayValidAndExist(Guid id)
-        {
-            throw new NotImplementedException();
-        }
+
+
+
     }
 }

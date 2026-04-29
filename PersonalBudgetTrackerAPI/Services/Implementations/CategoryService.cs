@@ -128,6 +128,7 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
             {
                 throw new NotFoundException("there is no any categories");
             }
+
             var items = await query
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
