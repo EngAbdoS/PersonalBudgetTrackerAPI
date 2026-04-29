@@ -15,12 +15,10 @@ namespace PersonalBudgetTrackerAPI.Controllers
     [ApiController]
     public class ReasonsController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
         private readonly IReasonService _reasonService;     
 
         public ReasonsController(ApplicationDbContext context, IReasonService reasonService)
         {
-            _context = context;
             _reasonService = reasonService;
         }
 

@@ -1,14 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using PersonalBudgetTrackerAPI.Common;
 using PersonalBudgetTrackerAPI.DatabaseContext;
-
-using Microsoft.AspNetCore.Authorization;
+using PersonalBudgetTrackerAPI.DTOs.Entities.CategoryDTOs;
 using PersonalBudgetTrackerAPI.Models.Entities;
+using PersonalBudgetTrackerAPI.Services.Interfaces;
 
 namespace PersonalBudgetTrackerAPI.Controllers
 {
@@ -17,96 +14,74 @@ namespace PersonalBudgetTrackerAPI.Controllers
     [ApiController]
     public class CategoriesController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-
-        public CategoriesController(ApplicationDbContext context)
+        private readonly ICategoryService _service;
+        public CategoriesController(ICategoryService service)
         {
-            _context = context;
+            _service = service;
         }
 
-        // GET: api/Categories
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Category>>> GetCategory()
-        {
-            return await _context.Category.ToListAsync();
-        }
-
-        // GET: api/Categories/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Category>> GetCategory(Guid id)
-        {
-            var category = await _context.Category.FindAsync(id);
-
-            if (category == null)
-            {
-                return NotFound();
-            }
-
-            return category;
-        }
-
-        // PUT: api/Categories/5
-        [Authorize(Roles = "Admin")]
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutCategory(Guid id, Category category)
-        {
-            if (id != category.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(category).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CategoryExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
 
         // POST: api/Categories
-        [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<ActionResult<Category>> PostCategory(Category category)
+        public async Task<IActionResult> Create([FromBody] CreateCategoryDto dto)
         {
-            _context.Category.Add(category);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetCategory", new { id = category.Id }, category);
+            var result = await _service.CreateCategoryAsync(dto);
+            return Ok(ApiResponse<CategoryDto>.Ok(result,"Category created successfully"));
         }
+
+
+        // PUT: api/Categories/5
+        [HttpPut("{id:guid}")]
+        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateCategoryDto dto)
+        {
+            var result = await _service.UpdateCategoryAsync(id, dto);
+            return Ok(ApiResponse<CategoryDto>.Ok(result,"Category updated successfully"));
+        }
+
 
         // DELETE: api/Categories/5
-        [Authorize(Roles = "Admin")]
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCategory(Guid id)
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
-            var category = await _context.Category.FindAsync(id);
-            if (category == null)
-            {
-                return NotFound();
-            }
-
-            _context.Category.Remove(category);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            await _service.DeleteCategoryAsync(id);
+            return Ok(ApiResponse<string>.Ok("Deleted successfully","Category deleted successfully"));
         }
 
-        private bool CategoryExists(Guid id)
+
+        // GET: api/Categories
+        [HttpGet("{id:guid}")]
+        public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
-            return _context.Category.Any(e => e.Id == id);
+            var result = await _service.GetCategoryByIdAsync(id);
+            return Ok(ApiResponse<CategoryDto>.Ok(result,"Category retrieved successfully"));
         }
+
+
+        // GET: api/Categories/details?page=2&pageSize=5
+        [HttpGet("details")]
+        public async Task<IActionResult> GetDetails([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+        {
+            var result = await _service.GetCategoriesWithDetailsAsync(page, pageSize);
+            return Ok(ApiResponse<PagedResult<CategoryDetailsDto>>.Ok(result,"Categories retrieved successfully"));
+        }
+
+
+        // GET: api/Categories?search=example&isNeedful=true&minPriority=1&maxPriority=5&page=2&pageSize=5
+        [HttpGet]
+        public async Task<IActionResult> Get(
+            [FromQuery] string? search,
+            [FromQuery] bool? isNeedful,
+            [FromQuery] decimal? minPriority,
+            [FromQuery] decimal? maxPriority,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10)
+        {
+            var result = await _service.SearchCategoriesAsync(
+                search, isNeedful, minPriority, maxPriority, page, pageSize);
+
+            return Ok(ApiResponse<PagedResult<CategoryDto>>.Ok(result,"Categories retrieved successfully"));
+        }
+
+
     }
 }
