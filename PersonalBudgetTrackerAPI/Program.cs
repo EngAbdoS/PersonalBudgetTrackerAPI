@@ -87,6 +87,7 @@ builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
 builder.Services.AddScoped<IReasonService, ReasonService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IPaymentGatewayService, PaymentGatewayService>();
 
 
 builder.Services.AddOpenApi();
