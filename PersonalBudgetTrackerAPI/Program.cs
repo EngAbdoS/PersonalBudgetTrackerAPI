@@ -86,6 +86,7 @@ builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
 
 builder.Services.AddScoped<IReasonService, ReasonService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 
 builder.Services.AddOpenApi();
