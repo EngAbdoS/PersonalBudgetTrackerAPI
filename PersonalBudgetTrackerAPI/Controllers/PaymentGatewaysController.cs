@@ -1,14 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using PersonalBudgetTrackerAPI.DatabaseContext;
-
 using Microsoft.AspNetCore.Authorization;
-using PersonalBudgetTrackerAPI.Models.Entities;
+using Microsoft.AspNetCore.Mvc;
+using PersonalBudgetTrackerAPI.Common;
+using PersonalBudgetTrackerAPI.DTOs.Entities.PaymentGatewayDtos;
+using PersonalBudgetTrackerAPI.Services.Interfaces;
 
 namespace PersonalBudgetTrackerAPI.Controllers
 {
@@ -17,96 +11,38 @@ namespace PersonalBudgetTrackerAPI.Controllers
     [ApiController]
     public class PaymentGatewaysController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IPaymentGatewayService _service;
 
-        public PaymentGatewaysController(ApplicationDbContext context)
+
+        public PaymentGatewaysController(IPaymentGatewayService service)
         {
-            _context = context;
+            _service = service;
+        }
+
+        // POST: api/PaymentGateways
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] CreatePaymentGatewayDto dto)
+        {
+            var result = await _service.CreateAsync(dto);
+            return Ok(ApiResponse<PaymentGatewayDto>.Ok(result, "Payment gateway created"));
         }
 
         // GET: api/PaymentGateways
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<PaymentGateway>>> GetPaymentGateway()
+        public async Task<IActionResult> GetAll()
         {
-            return await _context.PaymentGateway.ToListAsync();
+            var result = await _service.GetUserPaymentGatewaysAsync();
+            return Ok(ApiResponse<List<PaymentGatewayDto>>.Ok(result, "Payment gateways retrieved"));
         }
 
         // GET: api/PaymentGateways/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<PaymentGateway>> GetPaymentGateway(Guid id)
+        [HttpGet("{id:guid}")]
+        public async Task<IActionResult> GetDetails([FromRoute] Guid id)
         {
-            var paymentGateway = await _context.PaymentGateway.FindAsync(id);
-
-            if (paymentGateway == null)
-            {
-                return NotFound();
-            }
-
-            return paymentGateway;
+            var result = await _service.GetDetailsByIdAsync(id);
+            return Ok(ApiResponse<PaymentGatewayDetailsDto>.Ok(result, "Payment gateway details retrieved"));
         }
 
-        // PUT: api/PaymentGateways/5
-        [Authorize(Roles = "Admin")]
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutPaymentGateway(Guid id, PaymentGateway paymentGateway)
-        {
-            if (id != paymentGateway.Id)
-            {
-                return BadRequest();
-            }
 
-            _context.Entry(paymentGateway).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!PaymentGatewayExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // POST: api/PaymentGateways
-        [Authorize(Roles = "Admin")]
-        [HttpPost]
-        public async Task<ActionResult<PaymentGateway>> PostPaymentGateway(PaymentGateway paymentGateway)
-        {
-            _context.PaymentGateway.Add(paymentGateway);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetPaymentGateway", new { id = paymentGateway.Id }, paymentGateway);
-        }
-
-        // DELETE: api/PaymentGateways/5
-        [Authorize(Roles = "Admin")]
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePaymentGateway(Guid id)
-        {
-            var paymentGateway = await _context.PaymentGateway.FindAsync(id);
-            if (paymentGateway == null)
-            {
-                return NotFound();
-            }
-
-            _context.PaymentGateway.Remove(paymentGateway);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool PaymentGatewayExists(Guid id)
-        {
-            return _context.PaymentGateway.Any(e => e.Id == id);
-        }
     }
 }
