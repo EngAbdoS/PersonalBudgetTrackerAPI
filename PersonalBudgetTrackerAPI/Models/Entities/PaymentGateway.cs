@@ -10,15 +10,20 @@ namespace PersonalBudgetTrackerAPI.Models.Entities
 
         [Required ]
         public required string Title { get; set; }
-        [Required]
 
-        public required string Description { get; set; }
         [Required]
-
+        public required string Description { get; set; 
+        }
+        [Required]
         public required string BankName { get; set; }
 
         [Required]
         public PaymentGatewayType PaymentGatewayType { get; set; }
+
+        public decimal InitialBalance { get; set; } 
+
+        [Required]
+        public DateTime ExpirationDate { get; set; }
 
     }
 

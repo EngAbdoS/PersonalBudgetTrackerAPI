@@ -54,6 +54,7 @@ namespace PersonalBudgetTrackerAPI.Controllers
         {
             var result = await _service.GetCategoryByIdAsync(id);
             return Ok(ApiResponse<CategoryDto>.Ok(result,"Category retrieved successfully"));
+            //TODO return category details instead of category dto
         }
 
 
