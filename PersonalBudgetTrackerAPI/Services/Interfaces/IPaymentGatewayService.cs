@@ -11,5 +11,7 @@ namespace PersonalBudgetTrackerAPI.Services.Interfaces
         Task<List<PaymentGatewayDto>> GetUserPaymentGatewaysAsync();
 
         Task<PaymentGatewayDetailsDto> GetDetailsByIdAsync(Guid id);
+
+        Task<List<PartnerPaymentGatewayStatsDto>> GetPaymentGatewayStats(Guid id);
     }
 }

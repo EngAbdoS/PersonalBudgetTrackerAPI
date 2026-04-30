@@ -12,9 +12,11 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
     public class TransactionPartnerService : ITransactionPartnerService
     {
         private readonly ApplicationDbContext _context;
-        public TransactionPartnerService(ApplicationDbContext context)
+        private readonly IPaymentGatewayService _paymentGatewayService; 
+        public TransactionPartnerService(ApplicationDbContext context, IPaymentGatewayService paymentGatewayService)
         {
             _context = context;
+            _paymentGatewayService = paymentGatewayService;
         }
 
         public async Task<bool> TransactionPartnerValidAndExist(Guid id)
@@ -99,18 +101,74 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
             };
         }
 
-
-
-
-
-
-        public Task<TransactionPartnerDetailsDto> GetDetailsAsync(Guid id)
+        public async Task<TransactionPartnerDetailsDto> GetDetailsAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var partner = await GetPartnerOrThrow(id);
+
+            var usage = await GetUsageCount(id);
+            var income = await GetTotalIncome(id);
+            var expense = await GetTotalExpense(id);
+
+            var categories = await GetCategories(id);
+            var reasons = await GetReasons(id);
+            var gateways = await _paymentGatewayService.GetPaymentGatewayStats(id);
+
+            return new TransactionPartnerDetailsDto
+            {
+                Id = partner.Id,
+                Name = partner.Name,
+                UsageCount = usage,
+                TotalIncome = income,
+                TotalExpense = expense,
+                Categories = categories,
+                Reasons = reasons,
+                PaymentGateways = gateways
+            };
         }
 
-     
 
-       
+        private async Task<TransactionPartner> GetPartnerOrThrow(Guid id)
+        {
+            return await _context.TransactionPartner
+                .FirstOrDefaultAsync(p => p.Id == id)
+                ?? throw new NotFoundException("Transaction partner not found");
+        }
+        private async Task<int> GetUsageCount(Guid id)
+        {
+            return await _context.Set<Transaction>()
+                .CountAsync(t => t.TransactionPartnerId == id);
+        }
+        private async Task<decimal> GetTotalIncome(Guid id)
+        {
+            return await _context.Set<Income>()
+                .Where(i => i.TransactionPartnerId == id)
+                .SumAsync(i => (decimal?)i.Amount) ?? 0;
+        }
+        private async Task<decimal> GetTotalExpense(Guid id)
+        {
+            return await _context.Set<Expense>()
+                .Where(e => e.TransactionPartnerId == id)
+                .SumAsync(e => (decimal?)e.Amount) ?? 0;
+        }
+        private async Task<List<string>> GetCategories(Guid id)
+        {
+            return await _context.Set<Expense>()
+                .Where(e => e.TransactionPartnerId == id)
+                .Select(e => e.Category.Title)
+                .Distinct()
+                .ToListAsync();
+        }
+        private async Task<List<string>> GetReasons(Guid id)
+        {
+            return await _context.Set<Income>()
+                .Where(i => i.TransactionPartnerId == id)
+                .Select(i => i.Reason.ReasonDetails)
+                .Distinct()
+                .ToListAsync();
+        }
+
+
+
+
     }
 }

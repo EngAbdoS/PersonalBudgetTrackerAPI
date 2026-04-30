@@ -76,8 +76,28 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
             };
         }
 
+        public async Task<List<PartnerPaymentGatewayStatsDto>> GetPaymentGatewayStats(Guid id)
+        {
+            return await _context.Set<Transaction>()
+                .Where(t => t.TransactionPartnerId == id)
+                .GroupBy(t => new { t.PaymentGatewayId, t.PaymentGateway.Title })
+                .Select(g => new PartnerPaymentGatewayStatsDto
+                {
+                    PaymentGatewayId = g.Key.PaymentGatewayId,
+                    Title = g.Key.Title,
 
+                    UsageCount = g.Count(),
 
+                    TotalIncome = g
+                        .Where(x => EF.Property<string>(x, "Discriminator") == "Income")
+                        .Sum(x => (decimal?)x.Amount) ?? 0,
+
+                    TotalExpense = g
+                        .Where(x => EF.Property<string>(x, "Discriminator") == "Expense")
+                        .Sum(x => (decimal?)x.Amount) ?? 0
+                })
+                .ToListAsync();
+        }
 
     }
 }
