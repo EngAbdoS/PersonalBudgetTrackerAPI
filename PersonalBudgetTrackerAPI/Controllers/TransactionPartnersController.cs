@@ -1,14 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using PersonalBudgetTrackerAPI.DatabaseContext;
-
 using Microsoft.AspNetCore.Authorization;
-using PersonalBudgetTrackerAPI.Models.Entities;
+using Microsoft.AspNetCore.Mvc;
+using PersonalBudgetTrackerAPI.Common;
+using PersonalBudgetTrackerAPI.DTOs.Entities.TransactionPartnerDTOs;
+using PersonalBudgetTrackerAPI.Services.Interfaces;
+
 
 namespace PersonalBudgetTrackerAPI.Controllers
 {
@@ -17,96 +12,55 @@ namespace PersonalBudgetTrackerAPI.Controllers
     [ApiController]
     public class TransactionPartnersController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-
-        public TransactionPartnersController(ApplicationDbContext context)
+        private readonly ITransactionPartnerService _service;
+        public TransactionPartnersController(ITransactionPartnerService service)
         {
-            _context = context;
+            _service = service;
         }
 
         // GET: api/TransactionPartners
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TransactionPartner>>> GetTransactionPartner()
+        public async Task<IActionResult> GetAll([FromQuery] int page = 1,[FromQuery] int pageSize = 10)
         {
-            return await _context.TransactionPartner.ToListAsync();
-        }
+            var result = await _service.GetAllAsync(page, pageSize);
 
-        // GET: api/TransactionPartners/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<TransactionPartner>> GetTransactionPartner(Guid id)
-        {
-            var transactionPartner = await _context.TransactionPartner.FindAsync(id);
-
-            if (transactionPartner == null)
-            {
-                return NotFound();
-            }
-
-            return transactionPartner;
-        }
-
-        // PUT: api/TransactionPartners/5
-        [Authorize(Roles = "Admin")]
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutTransactionPartner(Guid id, TransactionPartner transactionPartner)
-        {
-            if (id != transactionPartner.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(transactionPartner).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!TransactionPartnerExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            return Ok(ApiResponse<PagedResult<TransactionPartnerDto>>
+                .Ok(result, "Transaction partners retrieved"));
         }
 
         // POST: api/TransactionPartners
-        [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<ActionResult<TransactionPartner>> PostTransactionPartner(TransactionPartner transactionPartner)
+        public async Task<IActionResult> Create([FromBody] CreateTransactionPartnerDto dto)
         {
-            _context.TransactionPartner.Add(transactionPartner);
-            await _context.SaveChangesAsync();
+            var result = await _service.CreateAsync(dto);
+            return Ok(ApiResponse<TransactionPartnerDto>.Ok(result, "Created successfully"));
+        }
 
-            return CreatedAtAction("GetTransactionPartner", new { id = transactionPartner.Id }, transactionPartner);
+
+        // PUT: api/TransactionPartners/5
+        [HttpPut("{id:guid}")]
+        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateTransactionPartnerDto dto)
+        {
+            var result = await _service.UpdateAsync(id, dto);
+            return Ok(ApiResponse<TransactionPartnerDto>.Ok(result, "Updated successfully"));
         }
 
         // DELETE: api/TransactionPartners/5
-        [Authorize(Roles = "Admin")]
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTransactionPartner(Guid id)
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
-            var transactionPartner = await _context.TransactionPartner.FindAsync(id);
-            if (transactionPartner == null)
-            {
-                return NotFound();
-            }
-
-            _context.TransactionPartner.Remove(transactionPartner);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            await _service.DeleteAsync(id);
+            return Ok(ApiResponse<string>.Ok("Deleted", "Deleted successfully"));
         }
 
-        private bool TransactionPartnerExists(Guid id)
+        // GET: api/TransactionPartners/5
+        [HttpGet("{id:guid}")]
+        public async Task<IActionResult> GetDetails([FromRoute] Guid id)
         {
-            return _context.TransactionPartner.Any(e => e.Id == id);
+            var result = await _service.GetDetailsAsync(id);
+            return Ok(ApiResponse<TransactionPartnerDetailsDto>.Ok(result, "Transaction partner details retrieved"));
         }
+
+    
     }
 }
