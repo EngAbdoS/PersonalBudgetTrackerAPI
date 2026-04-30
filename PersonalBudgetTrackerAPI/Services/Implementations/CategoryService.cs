@@ -11,10 +11,12 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
     public class CategoryService : ICategoryService
     {
         private readonly ApplicationDbContext _context;
+        private readonly ITransactionPartnerService _transactionPartnerService;
 
-        public CategoryService(ApplicationDbContext context)
+        public CategoryService(ApplicationDbContext context, ITransactionPartnerService transactionPartnerService)
         {
             _context = context;
+            _transactionPartnerService = transactionPartnerService;
         }
         public async Task<bool> CategoryValidAndExist(Guid categoryId)
         {
@@ -112,13 +114,13 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
         {
             var query = _context.Set<Expense>()
                 .GroupBy(e => new { e.CategoryId, e.Category.Title, e.Category.Details })
-                .Select(g => new CategoryDetailsDto
+                .Select( g  => new CategoryDetailsDto
                 {
                     CategoryId = g.Key.CategoryId,
                     Title = g.Key.Title,
                     Details = g.Key.Details,
                     UsageCount = g.Count(),
-                    TotalExpense = g.Sum(e => e.Amount)
+                    TotalExpense = g.Sum(e => e.Amount),
                 })
                 .OrderByDescending(x => x.UsageCount);
 
@@ -134,9 +136,28 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
                 .Take(pageSize)
                 .ToListAsync();
 
+            var result = new List<CategoryDetailsDto>();
+
+            foreach (var item in items)
+            {
+                var partners = await _transactionPartnerService
+                    .GetPartnersByCategoryIdAsync(item.CategoryId);
+
+                result.Add(new CategoryDetailsDto
+                {
+                    CategoryId = item.CategoryId,
+                    Title = item.Title,
+                    Details = item.Details,
+                    UsageCount = item.UsageCount,
+                    TotalExpense = item.TotalExpense,
+                    TransactionPartners = partners
+                });
+            }
+
+
             return new PagedResult<CategoryDetailsDto>
             {
-                Items = items,
+                Items = result,
                 TotalCount = total,
                 Page = page,
                 PageSize = pageSize

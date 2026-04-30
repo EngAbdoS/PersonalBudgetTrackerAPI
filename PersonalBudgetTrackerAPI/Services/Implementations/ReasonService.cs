@@ -2,6 +2,7 @@
 using PersonalBudgetTrackerAPI.Common;
 using PersonalBudgetTrackerAPI.Common.Exceptions;
 using PersonalBudgetTrackerAPI.DatabaseContext;
+using PersonalBudgetTrackerAPI.DTOs.Entities.CategoryDTOs;
 using PersonalBudgetTrackerAPI.DTOs.Entities.ReasonDTOs;
 using PersonalBudgetTrackerAPI.Models.Entities;
 using PersonalBudgetTrackerAPI.Services.Interfaces;
@@ -11,10 +12,12 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
     public class ReasonService : IReasonService
     {
         private readonly ApplicationDbContext _context;
+        private readonly ITransactionPartnerService _transactionPartnerService;
 
-        public ReasonService(ApplicationDbContext context)
+        public ReasonService(ApplicationDbContext context, ITransactionPartnerService transactionPartnerService)
         {
             _context = context;
+            _transactionPartnerService = transactionPartnerService;
         }
 
 
@@ -66,9 +69,26 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
                               .Take(pageSize)
                               .ToListAsync();
 
+            var result = new List<ReasonDetailsDto>();
+
+            foreach (var item in items)
+            {
+                var partners = await _transactionPartnerService
+                    .GetPartnersByReasonIdAsync(item.ReasonId);
+
+                result.Add(new ReasonDetailsDto
+                {
+                    ReasonId = item.ReasonId,
+                    ReasonDetails = item.ReasonDetails,
+                    UsageCount = item.UsageCount,
+                    TotalIncome = item.TotalIncome,
+                    TransactionPartners = partners
+                });
+            }
+
             return new PagedResult<ReasonDetailsDto>
             {
-                Items = items,
+                Items = result,
                 TotalCount = totalCount,
                 Page = page,
                 PageSize = pageSize

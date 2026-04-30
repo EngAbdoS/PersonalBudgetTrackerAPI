@@ -1,4 +1,6 @@
-﻿namespace PersonalBudgetTrackerAPI.DTOs.Entities.ReasonDTOs
+﻿using PersonalBudgetTrackerAPI.DTOs.Entities.TransactionPartnerDTOs;
+
+namespace PersonalBudgetTrackerAPI.DTOs.Entities.ReasonDTOs
 {
     public class ReasonDetailsDto
     {
@@ -6,5 +8,7 @@
         public string ReasonDetails { get; set; } = string.Empty;
         public int UsageCount { get; set; }
         public decimal TotalIncome { get; set; }
+        public List<TransactionPartnerDto> TransactionPartners { get; set; } = new();
+
     }
 }
