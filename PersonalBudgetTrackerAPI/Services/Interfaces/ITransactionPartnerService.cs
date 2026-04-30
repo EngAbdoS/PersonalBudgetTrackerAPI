@@ -14,5 +14,11 @@ namespace PersonalBudgetTrackerAPI.Services.Interfaces
         Task<PagedResult<TransactionPartnerDto>> GetAllAsync(int page, int pageSize);
 
         Task<TransactionPartnerDetailsDto> GetDetailsAsync(Guid id);
+
+
+        Task<List<TransactionPartnerDto>> GetPartnersByReasonIdAsync(Guid reasonId);
+
+        Task<List<TransactionPartnerDto>> GetPartnersByCategoryIdAsync(Guid categoryId);
+
     }
 }

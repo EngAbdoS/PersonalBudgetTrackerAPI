@@ -126,6 +126,27 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
             };
         }
 
+        public async Task<List<TransactionPartnerDto>> GetPartnersByReasonIdAsync(Guid reasonId)
+        {
+            var partners = await _context.Set<Income>()
+                .Where(i => i.ReasonId == reasonId)
+                .Select(i => i.TransactionPartner)
+                .Distinct()
+                .ToListAsync();
+
+            return partners.Select(p => p.ToDto()).ToList();
+        }
+
+        public async Task<List<TransactionPartnerDto>> GetPartnersByCategoryIdAsync(Guid categoryId)
+        {
+            var partners = await _context.Set<Expense>()
+                .Where(e => e.CategoryId == categoryId)
+                .Select(e => e.TransactionPartner)
+                .Distinct()
+                .ToListAsync();
+
+            return partners.Select(p => p.ToDto()).ToList();
+        }
 
         private async Task<TransactionPartner> GetPartnerOrThrow(Guid id)
         {
