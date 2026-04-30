@@ -81,7 +81,6 @@ namespace PersonalBudgetTrackerAPI
                         Info = "Fast food restaurant",
                         Location = "Nasr City",
                         Contact = "123456789",
-                        CategoryId = foodCategory.Id
                     },
                     new TransactionPartner
                     {
@@ -90,7 +89,6 @@ namespace PersonalBudgetTrackerAPI
                         Info = "Ride service",
                         Location = "Cairo",
                         Contact = "987654321",
-                        CategoryId = transportCategory.Id
                     },
                             new TransactionPartner
                             {
@@ -99,7 +97,6 @@ namespace PersonalBudgetTrackerAPI
                                 Info = "work financial manager",
                                 Location = "Cairo",
                                 Contact = "987654321",
-                                CategoryId = transportCategory.Id
                             }
                 );
 
