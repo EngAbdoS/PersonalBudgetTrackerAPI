@@ -2,7 +2,6 @@
 using PersonalBudgetTrackerAPI.Common;
 using PersonalBudgetTrackerAPI.Common.Exceptions;
 using PersonalBudgetTrackerAPI.DatabaseContext;
-using PersonalBudgetTrackerAPI.DTOs.Entities.CategoryDTOs;
 using PersonalBudgetTrackerAPI.DTOs.Entities.ReasonDTOs;
 using PersonalBudgetTrackerAPI.Models.Entities;
 using PersonalBudgetTrackerAPI.Services.Interfaces;
