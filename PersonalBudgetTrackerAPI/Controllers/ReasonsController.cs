@@ -1,12 +1,13 @@
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using PersonalBudgetTrackerAPI.Common;
 using PersonalBudgetTrackerAPI.DatabaseContext;
-using Microsoft.AspNetCore.Authorization;
+using PersonalBudgetTrackerAPI.DTOs.Entities.ReasonDTOs;
+using PersonalBudgetTrackerAPI.DTOs.Entities.TransactionDTOs;
 using PersonalBudgetTrackerAPI.Models.Entities;
 using PersonalBudgetTrackerAPI.Services.Interfaces;
-using PersonalBudgetTrackerAPI.Common;
-using PersonalBudgetTrackerAPI.DTOs.Entities.ReasonDTOs;
 
 namespace PersonalBudgetTrackerAPI.Controllers
 {
@@ -16,10 +17,12 @@ namespace PersonalBudgetTrackerAPI.Controllers
     public class ReasonsController : ControllerBase
     {
         private readonly IReasonService _reasonService;     
+        private readonly ITransactionService _transactionService;
 
-        public ReasonsController(ApplicationDbContext context, IReasonService reasonService)
+        public ReasonsController(ApplicationDbContext context, IReasonService reasonService, ITransactionService transactionService)
         {
             _reasonService = reasonService;
+            _transactionService = transactionService;
         }
 
         // GET: api/Reasons/details?page=2&pageSize=5
@@ -45,6 +48,15 @@ namespace PersonalBudgetTrackerAPI.Controllers
                 .Ok(result, "Reasons retrieved successfully."));
         }
 
+
+        [HttpGet("{id:guid}/transactions")]
+        public async Task<ActionResult<ApiResponse<List<TransactionSimpleDto>>>> GetTransactions([FromRoute] Guid id)
+        {
+            var result = await _transactionService.GetByReasonIdAsync(id);
+
+            return Ok(ApiResponse<List<TransactionSimpleDto>>
+                .Ok(result, "Transactions retrieved successfully"));
+        }
 
     }
 }

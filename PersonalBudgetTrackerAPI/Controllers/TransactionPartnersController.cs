@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PersonalBudgetTrackerAPI.Common;
+using PersonalBudgetTrackerAPI.DTOs.Entities.TransactionDTOs;
 using PersonalBudgetTrackerAPI.DTOs.Entities.TransactionPartnerDTOs;
 using PersonalBudgetTrackerAPI.Services.Interfaces;
 
@@ -13,9 +14,12 @@ namespace PersonalBudgetTrackerAPI.Controllers
     public class TransactionPartnersController : ControllerBase
     {
         private readonly ITransactionPartnerService _service;
-        public TransactionPartnersController(ITransactionPartnerService service)
+        private readonly ITransactionService _transactionService;
+
+        public TransactionPartnersController(ITransactionPartnerService service, ITransactionService transactionService)
         {
             _service = service;
+            _transactionService = transactionService;
         }
 
         // GET: api/TransactionPartners
@@ -61,6 +65,14 @@ namespace PersonalBudgetTrackerAPI.Controllers
             return Ok(ApiResponse<TransactionPartnerDetailsDto>.Ok(result, "Transaction partner details retrieved"));
         }
 
-    
+        [HttpGet("{id:guid}/transactions")]
+        public async Task<ActionResult<ApiResponse<List<TransactionSimpleDto>>>> GetTransactions([FromRoute] Guid id)
+        {
+            var result = await _transactionService.GetByPartnerIdAsync(id);
+
+            return Ok(ApiResponse<List<TransactionSimpleDto>>
+                .Ok(result, "Transactions retrieved successfully"));
+        }
+
     }
 }

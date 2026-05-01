@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PersonalBudgetTrackerAPI.Common;
 using PersonalBudgetTrackerAPI.DTOs.Entities.CategoryDTOs;
+using PersonalBudgetTrackerAPI.DTOs.Entities.TransactionDTOs;
 using PersonalBudgetTrackerAPI.Services.Interfaces;
 
 namespace PersonalBudgetTrackerAPI.Controllers
@@ -12,9 +13,11 @@ namespace PersonalBudgetTrackerAPI.Controllers
     public class CategoriesController : ControllerBase
     {
         private readonly ICategoryService _service;
-        public CategoriesController(ICategoryService service)
+        private readonly ITransactionService _transactionService;
+        public CategoriesController(ICategoryService service, ITransactionService transactionService)
         {
             _service = service;
+            _transactionService = transactionService;
         }
 
 
@@ -80,6 +83,13 @@ namespace PersonalBudgetTrackerAPI.Controllers
             return Ok(ApiResponse<PagedResult<CategoryDto>>.Ok(result,"Categories retrieved successfully"));
         }
 
+        [HttpGet("{id:guid}/transactions")]
+        public async Task<ActionResult<ApiResponse<List<TransactionSimpleDto>>>> GetTransactions([FromRoute] Guid id)
+        {
+            var result = await _transactionService.GetByCategoryIdAsync(id);
 
+            return Ok(ApiResponse<List<TransactionSimpleDto>>
+                .Ok(result, "Transactions retrieved successfully"));
+        }
     }
 }

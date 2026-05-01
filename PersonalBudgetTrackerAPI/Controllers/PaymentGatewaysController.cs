@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PersonalBudgetTrackerAPI.Common;
 using PersonalBudgetTrackerAPI.DTOs.Entities.PaymentGatewayDtos;
+using PersonalBudgetTrackerAPI.DTOs.Entities.TransactionDTOs;
 using PersonalBudgetTrackerAPI.Services.Interfaces;
 
 namespace PersonalBudgetTrackerAPI.Controllers
@@ -12,11 +13,12 @@ namespace PersonalBudgetTrackerAPI.Controllers
     public class PaymentGatewaysController : ControllerBase
     {
         private readonly IPaymentGatewayService _service;
+        private readonly ITransactionService _transactionService;
 
-
-        public PaymentGatewaysController(IPaymentGatewayService service)
+        public PaymentGatewaysController(IPaymentGatewayService service, ITransactionService transactionService)
         {
             _service = service;
+            _transactionService = transactionService;
         }
 
         // POST: api/PaymentGateways
@@ -43,6 +45,15 @@ namespace PersonalBudgetTrackerAPI.Controllers
             return Ok(ApiResponse<PaymentGatewayDetailsDto>.Ok(result, "Payment gateway details retrieved"));
         }
 
+
+        [HttpGet("{id:guid}/transactions")]
+        public async Task<ActionResult<ApiResponse<List<TransactionSimpleDto>>>> GetTransactions([FromRoute] Guid id)
+        {
+            var result = await _transactionService.GetByPaymentGatewayIdAsync(id);
+
+            return Ok(ApiResponse<List<TransactionSimpleDto>>
+                .Ok(result, "Transactions retrieved successfully"));
+        }
 
     }
 }
