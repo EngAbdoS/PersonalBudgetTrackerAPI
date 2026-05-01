@@ -1,12 +1,10 @@
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using PersonalBudgetTrackerAPI.Common;
 using PersonalBudgetTrackerAPI.DatabaseContext;
 using PersonalBudgetTrackerAPI.DTOs.Entities.ReasonDTOs;
 using PersonalBudgetTrackerAPI.DTOs.Entities.TransactionDTOs;
-using PersonalBudgetTrackerAPI.Models.Entities;
 using PersonalBudgetTrackerAPI.Services.Interfaces;
 
 namespace PersonalBudgetTrackerAPI.Controllers
