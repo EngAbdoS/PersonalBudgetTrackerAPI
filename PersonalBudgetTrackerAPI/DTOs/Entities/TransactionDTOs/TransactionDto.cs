@@ -15,9 +15,14 @@ namespace PersonalBudgetTrackerAPI.DTOs.Entities.TransactionDTOs
         public PaymentType PaymentType { get; set; }
 
         public string PaymentGateway { get; set; } = string.Empty;
+
+        public Guid PaymentGatewayId { get; set; }
         public string TransactionPartner { get; set; } = string.Empty;
+        public Guid TransactionPartnerId { get; set; }
 
         public string? Reason { get; set; }
+        public Guid ReasonId { get; set; }
         public string? Category { get; set; }
+        public Guid CategoryId { get; set; }
     }
 }

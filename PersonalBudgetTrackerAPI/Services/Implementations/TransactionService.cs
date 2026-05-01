@@ -173,6 +173,20 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
                 .FirstOrDefaultAsync(t => t.TransactionId == id)
                 ?? throw new NotFoundException("Transaction not found");
 
+            if (transaction is Income income)
+            {
+                await _context.Entry(income)
+                    .Reference(x => x.Reason)
+                    .LoadAsync();
+            }
+
+            if (transaction is Expense expense)
+            {
+                await _context.Entry(expense)
+                    .Reference(x => x.Category)
+                    .LoadAsync();
+            }
+
             return transaction.ToDto();
         }
 
