@@ -11,15 +11,151 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
     public class TransactionService : ITransactionService
     {
         private readonly ApplicationDbContext _context;
+        private readonly ITransactionPartnerService _partnerService;
+        private readonly IReasonService _reasonService;
+        private readonly ICategoryService _categoryService;
+        private readonly IPaymentGatewayService _gatewayService;
 
-        public TransactionService(ApplicationDbContext context)
+        public TransactionService(ApplicationDbContext context,
+            ITransactionPartnerService partnerService,
+            IReasonService reasonService,
+            ICategoryService categoryService,
+            IPaymentGatewayService gatewayService)
         {
             _context = context;
+            _partnerService = partnerService;
+            _reasonService = reasonService;
+            _categoryService = categoryService;
+            _gatewayService = gatewayService;
         }
-
-        public Task<TransactionDto> CreateAsync(CreateTransactionDto dto)
+        public async Task<TransactionDto> CreateAsync(CreateTransactionDto dto)
         {
-            throw new NotImplementedException();
+            // =========================
+            // 1. PAYMENT GATEWAY
+            // =========================
+            Guid paymentGatewayId;
+
+            if (dto.PaymentGatewayId.HasValue)
+            {
+                if (!await _gatewayService.PaymentGatewayValidAndExist(dto.PaymentGatewayId.Value))
+                    throw new NotFoundException("Invalid payment gateway");
+
+                paymentGatewayId = dto.PaymentGatewayId.Value;
+            }
+            else if (dto.NewPaymentGateway != null)
+            {
+                var gateway = await _gatewayService.CreateAsync(dto.NewPaymentGateway);
+                paymentGatewayId = gateway.Id;
+            }
+            else
+                throw new BadRequestException("Payment gateway is required");
+
+
+            // =========================
+            // 2. TRANSACTION PARTNER
+            // =========================
+            Guid partnerId;
+
+            if (dto.TransactionPartnerId.HasValue)
+            {
+                if(await _partnerService.TransactionPartnerValidAndExist(dto.TransactionPartnerId.Value) == false)
+                    throw new NotFoundException("Invalid transaction partner");
+                partnerId = dto.TransactionPartnerId.Value;
+
+            }
+            else if (dto.NewPartner != null)
+            {
+                var partner = await _partnerService.CreateAsync(dto.NewPartner);
+                partnerId = partner.Id;
+            }
+            else
+                throw new BadRequestException("Transaction partner is required");
+
+            // =========================
+            // 3. INCOME FLOW
+            // =========================
+            if (dto.IsIncome)
+            {
+                Guid reasonId;
+
+                if (dto.ReasonId.HasValue)
+                {
+                    if (!await _reasonService.ReasonValidAndExist(dto.ReasonId.Value))
+                        throw new NotFoundException("Invalid reason");
+
+                    reasonId = dto.ReasonId.Value;
+                }
+                else if (!string.IsNullOrWhiteSpace(dto.NewReason))
+                {
+                    var reason = await _reasonService.CreateReasonAsync(dto.NewReason);
+                    reasonId = reason.ReasonId;
+                }
+                else
+                    throw new BadRequestException("Reason is required for income");
+
+                var income = new Income
+                {
+                    TransactionId = Guid.NewGuid(),
+                    Amount = dto.Amount,
+                    Title = dto.Title,
+                    TransactionDetails = dto.TransactionDetails,
+                    Date = dto.Date,
+
+                    PaymentType = dto.PaymentType,
+                    PaymentGatewayId = paymentGatewayId,
+                    TransactionPartnerId = partnerId,
+
+                    ReasonId = reasonId
+                };
+
+                _context.Add(income);
+
+                await _context.SaveChangesAsync();
+
+                return income.ToDto();
+            }
+
+            // =========================
+            // 4. EXPENSE FLOW
+            // =========================
+            Guid categoryId;
+
+            if (dto.CategoryId.HasValue)
+            {
+                if (!await _categoryService.CategoryValidAndExist(dto.CategoryId.Value))
+                    throw new NotFoundException("Invalid category");
+
+                categoryId = dto.CategoryId.Value;
+            }
+            else if (dto.NewCategory != null)
+            {
+                var category = await _categoryService.CreateCategoryAsync(dto.NewCategory);
+                categoryId = category.CategoryId;
+            }
+            else
+                throw new BadRequestException("Category is required for expense");
+
+            var expense = new Expense
+            {
+                TransactionId = Guid.NewGuid(),
+                Amount = dto.Amount,
+                Title = dto.Title,
+                TransactionDetails = dto.TransactionDetails,
+                Date = dto.Date,
+
+                PaymentType = dto.PaymentType,
+                PaymentGatewayId = paymentGatewayId,
+                TransactionPartnerId = partnerId,
+
+                CategoryId = categoryId,
+                FeeAmount = dto.FeeAmount ?? 0
+            };
+
+            _context.Add(expense);
+
+            await _context.SaveChangesAsync();
+
+            return expense.ToDto();
         }
 
 
