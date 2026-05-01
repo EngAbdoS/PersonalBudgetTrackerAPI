@@ -42,7 +42,15 @@ namespace PersonalBudgetTrackerAPI.Controllers
             return Ok(ApiResponse<TransactionDto>.Ok(result, "Transaction created"));
         }
 
-      
+        // GET: api/transactions/requirements
+        [HttpGet("requirements")]
+        public async Task<ActionResult<ApiResponse<TransactionRequirementsDto>>> GetRequirements()
+        {
+            var result = await _service.GetRequirementsAsync();
+
+            return Ok(ApiResponse<TransactionRequirementsDto>
+                .Ok(result, "Transaction requirements retrieved successfully"));
+        }
 
 
     }

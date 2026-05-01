@@ -40,6 +40,39 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
             return transaction.ToDto();
         }
 
+        public async Task<TransactionRequirementsDto> GetRequirementsAsync()
+        {
+            var hasGateways = await _context.PaymentGateway.AnyAsync(p => !p.IsDeleted);
+            var hasCategories = await _context.Category.AnyAsync(c => !c.IsDeleted);
+            var hasPartners = await _context.TransactionPartner.AnyAsync(t => !t.IsDeleted);
+
+            var missing = new List<string>();
+
+            if (!hasGateways) missing.Add("PaymentGateway");
+            if (!hasCategories) missing.Add("Category");
+            if (!hasPartners) missing.Add("TransactionPartner");
+
+            return new TransactionRequirementsDto
+            {
+                HasPaymentGateways = hasGateways,
+                HasCategories = hasCategories,
+                HasTransactionPartners = hasPartners,
+
+                MissingResources = missing,
+
+                IncomeRequirements = new
+                {
+                    Required = new[] { "Amount", "Title", "PaymentType", "PaymentGatewayId", "TransactionPartnerId", "ReasonId" },
+                    Optional = new[] { "TransactionDetails", "Date" }
+                },
+
+                ExpenseRequirements = new
+                {
+                    Required = new[] { "Amount", "Title", "PaymentType", "PaymentGatewayId", "TransactionPartnerId", "CategoryId", "FeeAmount" },
+                    Optional = new[] { "TransactionDetails", "Date" }
+                }
+            };
+        }
 
         public async Task<List<TransactionSimpleDto>> GetByReasonIdAsync(Guid reasonId)
        => await _context.Set<Income>()
