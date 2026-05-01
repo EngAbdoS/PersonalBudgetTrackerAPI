@@ -69,6 +69,7 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
             {
                 Id = gateway.Id,
                 Title = gateway.Title,
+                ExpirationDate = gateway.ExpirationDate,
                 UsageCount = usage,
                 TotalIncome = income,
                 TotalExpense = expense,
