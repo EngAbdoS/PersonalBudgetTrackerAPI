@@ -7,11 +7,13 @@ namespace PersonalBudgetTrackerAPI.Services.Interfaces
     {
         Task<TransactionDto> CreateAsync(CreateTransactionDto dto);
 
+        Task<TransactionDto> GetByIdAsync(Guid id);
+
         Task<PagedResult<TransactionDto>> GetUserTransactionsAsync(TransactionFilterDto filter);
 
-        Task<List<TransactionDto>> GetByReasonIdAsync(Guid reasonId);
-        Task<List<TransactionDto>> GetByCategoryIdAsync(Guid categoryId);
-        Task<List<TransactionDto>> GetByPaymentGatewayIdAsync(Guid gatewayId);
-        Task<List<TransactionDto>> GetByPartnerIdAsync(Guid partnerId);
+        Task<List<TransactionSimpleDto>> GetByReasonIdAsync(Guid reasonId);
+        Task<List<TransactionSimpleDto>> GetByCategoryIdAsync(Guid categoryId);
+        Task<List<TransactionSimpleDto>> GetByPaymentGatewayIdAsync(Guid gatewayId);
+        Task<List<TransactionSimpleDto>> GetByPartnerIdAsync(Guid partnerId);
     }
 }
