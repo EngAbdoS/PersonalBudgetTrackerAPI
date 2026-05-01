@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PersonalBudgetTrackerAPI.Common;
+using PersonalBudgetTrackerAPI.Common.Pagination;
 using PersonalBudgetTrackerAPI.DTOs.Entities.CategoryDTOs;
 using PersonalBudgetTrackerAPI.DTOs.Entities.TransactionDTOs;
 using PersonalBudgetTrackerAPI.Services.Interfaces;
@@ -60,9 +61,9 @@ namespace PersonalBudgetTrackerAPI.Controllers
 
         // GET: api/Categories/details?page=2&pageSize=5
         [HttpGet("details")]
-        public async Task<IActionResult> GetDetails([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+        public async Task<IActionResult> GetDetails([FromQuery] PaginationQuery query)
         {
-            var result = await _service.GetCategoriesWithDetailsAsync(page, pageSize);
+            var result = await _service.GetCategoriesWithDetailsAsync(query);
             return Ok(ApiResponse<PagedResult<CategoryDetailsDto>>.Ok(result,"Categories retrieved successfully"));
         }
 
@@ -74,11 +75,10 @@ namespace PersonalBudgetTrackerAPI.Controllers
             [FromQuery] bool? isNeedful,
             [FromQuery] decimal? minPriority,
             [FromQuery] decimal? maxPriority,
-            [FromQuery] int page = 1,
-            [FromQuery] int pageSize = 10)
+            [FromQuery] PaginationQuery query)
         {
             var result = await _service.SearchCategoriesAsync(
-                search, isNeedful, minPriority, maxPriority, page, pageSize);
+                search, isNeedful, minPriority, maxPriority, query);
 
             return Ok(ApiResponse<PagedResult<CategoryDto>>.Ok(result,"Categories retrieved successfully"));
         }

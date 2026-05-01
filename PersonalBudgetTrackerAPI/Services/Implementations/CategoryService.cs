@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PersonalBudgetTrackerAPI.Common;
 using PersonalBudgetTrackerAPI.Common.Exceptions;
+using PersonalBudgetTrackerAPI.Common.Pagination;
 using PersonalBudgetTrackerAPI.DatabaseContext;
 using PersonalBudgetTrackerAPI.DTOs.Entities.CategoryDTOs;
 using PersonalBudgetTrackerAPI.Models.Entities;
@@ -83,7 +83,7 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
 
 
 
-        public async Task<PagedResult<CategoryDto>> GetCategoriesAsync(int page, int pageSize)
+        public async Task<PagedResult<CategoryDto>> GetCategoriesAsync(PaginationQuery pagination)
         {
             var query = _context.Category
                 .OrderByDescending(c => c.NeedPriority)
@@ -97,20 +97,20 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
             }
 
             var items = await query
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
+                .Skip((pagination.Page - 1) * pagination.PageSize)
+                .Take(pagination.PageSize)
                 .ToListAsync();
 
             return new PagedResult<CategoryDto>
             {
                 Items = items,
                 TotalCount = total,
-                Page = page,
-                PageSize = pageSize
+                Page = pagination.Page,
+                PageSize = pagination.PageSize
             };
         }
 
-        public async Task<PagedResult<CategoryDetailsDto>> GetCategoriesWithDetailsAsync(int page, int pageSize)
+        public async Task<PagedResult<CategoryDetailsDto>> GetCategoriesWithDetailsAsync(PaginationQuery pagination)
         {
             var query = _context.Set<Expense>()
                 .GroupBy(e => new { e.CategoryId, e.Category.Title, e.Category.Details })
@@ -132,8 +132,8 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
             }
 
             var items = await query
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
+                .Skip((pagination.Page - 1) * pagination.PageSize)
+                .Take(pagination.PageSize)
                 .ToListAsync();
 
             var result = new List<CategoryDetailsDto>();
@@ -159,8 +159,8 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
             {
                 Items = result,
                 TotalCount = total,
-                Page = page,
-                PageSize = pageSize
+                Page = pagination.Page,
+                PageSize = pagination.PageSize
             };
         }
 
@@ -171,8 +171,7 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
          bool? isNeedful,
          decimal? minPriority,
          decimal? maxPriority,
-         int page,
-         int pageSize)
+         PaginationQuery pagination)
         {
             var query = _context.Category.AsQueryable();
 
@@ -201,8 +200,8 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
                 throw new NotFoundException("no categories found");
             }
             var items = await query
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
+                .Skip((pagination.Page - 1) * pagination.PageSize)
+                .Take(pagination.PageSize)
                 .Select(c => c.ToDto())
                 .ToListAsync();
 
@@ -210,8 +209,8 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
             {
                 Items = items,
                 TotalCount = total,
-                Page = page,
-                PageSize = pageSize
+                Page = pagination.Page,
+                PageSize = pagination.PageSize
             };
         }
 

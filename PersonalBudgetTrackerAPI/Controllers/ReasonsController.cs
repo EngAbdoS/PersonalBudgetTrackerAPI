@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PersonalBudgetTrackerAPI.Common;
+using PersonalBudgetTrackerAPI.Common.Pagination;
 using PersonalBudgetTrackerAPI.DatabaseContext;
 using PersonalBudgetTrackerAPI.DTOs.Entities.ReasonDTOs;
 using PersonalBudgetTrackerAPI.DTOs.Entities.TransactionDTOs;
@@ -25,9 +26,9 @@ namespace PersonalBudgetTrackerAPI.Controllers
 
         // GET: api/Reasons/details?page=2&pageSize=5
         [HttpGet("details")]
-        public async Task<ActionResult<ApiResponse<PagedResult<ReasonDetailsDto>>>> GetReasonsWithDetails([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+        public async Task<ActionResult<ApiResponse<PagedResult<ReasonDetailsDto>>>> GetReasonsWithDetails([FromQuery] PaginationQuery query)
         {
-            var result = await _reasonService.GetReasonsWithDetailsAsync(page, pageSize);
+            var result = await _reasonService.GetReasonsWithDetailsAsync(query);
             return Ok(ApiResponse<PagedResult<ReasonDetailsDto>>.Ok(result, "Reasons retrieved successfully."));
         }
 
@@ -35,12 +36,11 @@ namespace PersonalBudgetTrackerAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<ApiResponse<PagedResult<ReasonDto>>>> GetReasons(
         [FromQuery] string? search,
-        [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 10)
+        [FromQuery] PaginationQuery query)
         {
             var result = string.IsNullOrWhiteSpace(search)
-                ? await _reasonService.GetUserReasonsAsync(page, pageSize)
-                : await _reasonService.SearchReasonsAsync(search, page, pageSize);
+                ? await _reasonService.GetUserReasonsAsync(query)
+                : await _reasonService.SearchReasonsAsync(search, query);
 
             return Ok(ApiResponse<PagedResult<ReasonDto>>
                 .Ok(result, "Reasons retrieved successfully."));

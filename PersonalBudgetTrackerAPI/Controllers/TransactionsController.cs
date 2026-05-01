@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PersonalBudgetTrackerAPI.Common;
+using PersonalBudgetTrackerAPI.Common.Pagination;
 using PersonalBudgetTrackerAPI.DTOs.Entities.TransactionDTOs;
 using PersonalBudgetTrackerAPI.Services.Interfaces;
 

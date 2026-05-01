@@ -1,4 +1,4 @@
-﻿using PersonalBudgetTrackerAPI.Common;
+﻿using PersonalBudgetTrackerAPI.Common.Pagination;
 using PersonalBudgetTrackerAPI.DTOs.Entities.CategoryDTOs;
 
 namespace PersonalBudgetTrackerAPI.Services.Interfaces
@@ -13,17 +13,16 @@ namespace PersonalBudgetTrackerAPI.Services.Interfaces
 
         Task<CategoryDto> GetCategoryByIdAsync(Guid id);
 
-        Task<PagedResult<CategoryDto>> GetCategoriesAsync(int page, int pageSize);
+        Task<PagedResult<CategoryDto>> GetCategoriesAsync(PaginationQuery pagination);
 
         Task<PagedResult<CategoryDto>> SearchCategoriesAsync(
             string? search,
             bool? isNeedful,
             decimal? minPriority,
             decimal? maxPriority,
-            int page,
-            int pageSize);
+            PaginationQuery pagination);
 
-        Task<PagedResult<CategoryDetailsDto>> GetCategoriesWithDetailsAsync(int page, int pageSize);
+        Task<PagedResult<CategoryDetailsDto>> GetCategoriesWithDetailsAsync(PaginationQuery pagination);
 
     }
 }

@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PersonalBudgetTrackerAPI.Common;
 using PersonalBudgetTrackerAPI.Common.Exceptions;
+using PersonalBudgetTrackerAPI.Common.Pagination;
 using PersonalBudgetTrackerAPI.DatabaseContext;
 using PersonalBudgetTrackerAPI.DTOs.Entities.TransactionPartnerDTOs;
 using PersonalBudgetTrackerAPI.Models.Entities;

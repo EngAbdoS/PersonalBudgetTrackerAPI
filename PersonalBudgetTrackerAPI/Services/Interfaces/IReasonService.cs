@@ -1,4 +1,4 @@
-﻿using PersonalBudgetTrackerAPI.Common;
+﻿using PersonalBudgetTrackerAPI.Common.Pagination;
 using PersonalBudgetTrackerAPI.DTOs.Entities.ReasonDTOs;
 using PersonalBudgetTrackerAPI.Models.Entities;
 
@@ -11,11 +11,11 @@ namespace PersonalBudgetTrackerAPI.Services.Interfaces
 
         Task<ReasonDto> CreateReasonAsync(string ReasonDetails); 
 
-        Task<PagedResult<ReasonDto>> GetUserReasonsAsync(int page, int pageSize);
+        Task<PagedResult<ReasonDto>> GetUserReasonsAsync(PaginationQuery pagination);
 
-        Task<PagedResult<ReasonDetailsDto>> GetReasonsWithDetailsAsync(int page, int pageSize);
+        Task<PagedResult<ReasonDetailsDto>> GetReasonsWithDetailsAsync(PaginationQuery pagination);
 
-        Task<PagedResult<ReasonDto>> SearchReasonsAsync(string query, int page, int pageSize);
+        Task<PagedResult<ReasonDto>> SearchReasonsAsync(string query, PaginationQuery pagination);
 
     }
 }

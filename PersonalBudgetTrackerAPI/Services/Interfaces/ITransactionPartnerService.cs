@@ -1,4 +1,4 @@
-﻿using PersonalBudgetTrackerAPI.Common;
+﻿using PersonalBudgetTrackerAPI.Common.Pagination;
 using PersonalBudgetTrackerAPI.DTOs.Entities.TransactionPartnerDTOs;
 
 namespace PersonalBudgetTrackerAPI.Services.Interfaces

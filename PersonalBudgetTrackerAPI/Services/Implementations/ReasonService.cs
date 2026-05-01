@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PersonalBudgetTrackerAPI.Common;
 using PersonalBudgetTrackerAPI.Common.Exceptions;
+using PersonalBudgetTrackerAPI.Common.Pagination;
 using PersonalBudgetTrackerAPI.DatabaseContext;
 using PersonalBudgetTrackerAPI.DTOs.Entities.ReasonDTOs;
 using PersonalBudgetTrackerAPI.Models.Entities;
@@ -42,7 +42,7 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
                 .AnyAsync(r => r.Id == reasonId && !r.IsDeleted);
         }
 
-        public async Task<PagedResult<ReasonDetailsDto>> GetReasonsWithDetailsAsync(int page, int pageSize)
+        public async Task<PagedResult<ReasonDetailsDto>> GetReasonsWithDetailsAsync(PaginationQuery pagination)
         {
 
             var query = _context.Set<Income>()
@@ -64,8 +64,8 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
             }
 
             var items = await query
-                              .Skip((page - 1) * pageSize)
-                              .Take(pageSize)
+                              .Skip((pagination.Page - 1) * pagination.PageSize)
+                              .Take(pagination.PageSize)
                               .ToListAsync();
 
             var result = new List<ReasonDetailsDto>();
@@ -89,13 +89,13 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
             {
                 Items = result,
                 TotalCount = totalCount,
-                Page = page,
-                PageSize = pageSize
+                Page = pagination.Page,
+                PageSize = pagination.PageSize
             };
 
         }
 
-        public async Task<PagedResult<ReasonDto>> GetUserReasonsAsync(int page, int pageSize)
+        public async Task<PagedResult<ReasonDto>> GetUserReasonsAsync(PaginationQuery pagination)
         {
 
             var query = _context.Reason
@@ -113,22 +113,22 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
                 throw new NotFoundException("there is no any used reasons");
             }
             var items = await query
-                              .Skip((page - 1) * pageSize)
-                              .Take(pageSize)
+                              .Skip((pagination.Page - 1) * pagination.PageSize)
+                              .Take(pagination.PageSize)
                               .ToListAsync();
 
             return new PagedResult<ReasonDto>
             {
                 Items = items,
                 TotalCount = totalCount,
-                Page = page,
-                PageSize = pageSize
+                Page = pagination.Page,
+                PageSize = pagination.PageSize
             };
 
 
         }
 
-        public async Task<PagedResult<ReasonDto>> SearchReasonsAsync(string queryText , int page, int pageSize)
+        public async Task<PagedResult<ReasonDto>> SearchReasonsAsync(string queryText, PaginationQuery pagination)
         {
             var query = _context.Reason
             .Where(r => r.ReasonDetails.ToLower().Contains(queryText.ToLower()))
@@ -148,16 +148,16 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
             }
 
             var items = await query
-                                 .Skip((page - 1) * pageSize)
-                                 .Take(pageSize)
+                                 .Skip((pagination.Page - 1) * pagination.PageSize)
+                                 .Take(pagination.PageSize)
                                  .ToListAsync();
 
             return new PagedResult<ReasonDto>
             {
                 Items = items,
                 TotalCount = totalCount,
-                Page = page,
-                PageSize = pageSize
+                Page = pagination.Page,
+                PageSize = pagination.PageSize
             };
 
         }

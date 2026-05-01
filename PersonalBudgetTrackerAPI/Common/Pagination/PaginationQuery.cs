@@ -1,4 +1,4 @@
-﻿namespace PersonalBudgetTrackerAPI.Common
+﻿namespace PersonalBudgetTrackerAPI.Common.Pagination
 {
     public class PaginationQuery
     {
