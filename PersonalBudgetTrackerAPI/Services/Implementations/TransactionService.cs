@@ -160,9 +160,89 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
 
 
 
-        public Task<PagedResult<TransactionDto>> GetUserTransactionsAsync(TransactionFilterDto filter)
+
+        public async Task<PagedResult<TransactionDto>> GetUserTransactionsAsync(TransactionFilterDto filter)
         {
-            throw new NotImplementedException();
+            var query = _context.Set<Transaction>()
+                .Include(t => t.TransactionPartner)
+                .Include(t => t.PaymentGateway)
+                .AsQueryable();
+
+            //  SEARCH
+            if (!string.IsNullOrWhiteSpace(filter.Search))
+            {
+                query = query.Where(t =>
+                    t.Title.Contains(filter.Search) ||
+                    (t.TransactionDetails != null && t.TransactionDetails.Contains(filter.Search)));
+            }
+
+            //  AMOUNT
+            if (filter.MinAmount.HasValue)
+                query = query.Where(t => t.Amount >= filter.MinAmount);
+
+            if (filter.MaxAmount.HasValue)
+                query = query.Where(t => t.Amount <= filter.MaxAmount);
+
+            //  DATE
+            if (filter.FromDate.HasValue)
+                query = query.Where(t => t.Date >= filter.FromDate);
+
+            if (filter.ToDate.HasValue)
+                query = query.Where(t => t.Date <= filter.ToDate);
+
+            //  PAYMENT
+            if (filter.PaymentType.HasValue)
+                query = query.Where(t => t.PaymentType == filter.PaymentType);
+
+            if (filter.PaymentGatewayId.HasValue)
+                query = query.Where(t => t.PaymentGatewayId == filter.PaymentGatewayId);
+
+            // PARTNER
+            if (filter.TransactionPartnerId.HasValue)
+                query = query.Where(t => t.TransactionPartnerId == filter.TransactionPartnerId);
+
+            // TYPE (Income / Expense)
+            if (!string.IsNullOrWhiteSpace(filter.Type))
+            {
+                if (filter.Type.ToLower() == "income")
+                    query = query.Where(t => EF.Property<string>(t, "Discriminator") == "Income");
+
+                else if (filter.Type.ToLower() == "expense")
+                    query = query.Where(t => EF.Property<string>(t, "Discriminator") == "Expense");
+            }
+
+            //  CATEGORY (only Expense)
+            if (filter.CategoryId.HasValue)
+            {
+                query = query.Where(t =>
+                    EF.Property<string>(t, "Discriminator") == "Expense" &&
+                    ((Expense)t).CategoryId == filter.CategoryId);
+            }
+
+            //  REASON (only Income)
+            if (filter.ReasonId.HasValue)
+            {
+                query = query.Where(t =>
+                    EF.Property<string>(t, "Discriminator") == "Income" &&
+                    ((Income)t).ReasonId == filter.ReasonId);
+            }
+
+            var total = await query.CountAsync();
+
+            var items = await query
+                .OrderByDescending(t => t.Date)
+                .Skip((filter.Page - 1) * filter.PageSize)
+                .Take(filter.PageSize)
+                .ToListAsync();
+
+            return new PagedResult<TransactionDto>
+            {
+                Items = items.Select(t => t.ToDto()).ToList(),
+
+                TotalCount = total,
+                Page = filter.Page,
+                PageSize = filter.PageSize
+            };
         }
 
         public async Task<TransactionDto> GetByIdAsync(Guid id)
