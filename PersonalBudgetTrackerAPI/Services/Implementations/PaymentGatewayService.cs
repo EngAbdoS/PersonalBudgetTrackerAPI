@@ -62,15 +62,20 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
                 .Where(e => e.PaymentGatewayId == id)
                 .SumAsync(e => (decimal?)e.Amount) ?? 0;
 
-            var usage = await _context.Set<Transaction>()
-                .CountAsync(t => t.PaymentGatewayId == id);
+            var incomeUsage = await _context.Set<Income>()
+                .CountAsync(i => i.PaymentGatewayId == id);
+
+            var expenseUsage = await _context.Set<Expense>()
+                .CountAsync(e => e.PaymentGatewayId == id);
+
 
             return new PaymentGatewayDetailsDto
             {
                 Id = gateway.Id,
                 Title = gateway.Title,
                 ExpirationDate = gateway.ExpirationDate,
-                UsageCount = usage,
+                IncomeUsageCount = incomeUsage,
+                ExpenseUsageCount = expenseUsage,
                 TotalIncome = income,
                 TotalExpense = expense,
                 CurrentBalance = gateway.InitialBalance + income - expense
