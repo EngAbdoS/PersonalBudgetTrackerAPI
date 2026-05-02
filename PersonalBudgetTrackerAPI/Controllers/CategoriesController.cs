@@ -51,26 +51,17 @@ namespace PersonalBudgetTrackerAPI.Controllers
 
         // GET: api/Categories/id
         [HttpGet("{id:guid}")]
-        public async Task<IActionResult> GetById([FromRoute] Guid id)
+        public async Task<ActionResult<ApiResponse<CategoryDetailsDto>>> GetById([FromRoute] Guid id)
         {
             var result = await _service.GetCategoryByIdAsync(id);
-            return Ok(ApiResponse<CategoryDto>.Ok(result,"Category retrieved successfully"));
+            return Ok(ApiResponse<CategoryDetailsDto>.Ok(result,"Category retrieved successfully"));
             //TODO return category details instead of category dto
-        }
-
-
-        // GET: api/Categories/details?page=2&pageSize=5
-        [HttpGet("details")]
-        public async Task<IActionResult> GetDetails([FromQuery] PaginationQuery query)
-        {
-            var result = await _service.GetCategoriesWithDetailsAsync(query);
-            return Ok(ApiResponse<PagedResult<CategoryDetailsDto>>.Ok(result,"Categories retrieved successfully"));
         }
 
 
         // GET: api/Categories?search=example&isNeedful=true&minPriority=1&maxPriority=5&page=2&pageSize=5
         [HttpGet]
-        public async Task<IActionResult> Get(
+        public async Task<ActionResult<ApiResponse<PagedResult<CategoryDto>>>> Get(
             [FromQuery] string? search,
             [FromQuery] bool? isNeedful,
             [FromQuery] decimal? minPriority,

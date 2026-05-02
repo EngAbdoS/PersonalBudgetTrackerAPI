@@ -11,7 +11,7 @@ namespace PersonalBudgetTrackerAPI.Services.Interfaces
 
         Task<bool> CategoryValidAndExist(Guid categoryId);
 
-        Task<CategoryDto> GetCategoryByIdAsync(Guid id);
+        Task<CategoryDetailsDto> GetCategoryByIdAsync(Guid id);
 
         Task<PagedResult<CategoryDto>> GetCategoriesAsync(PaginationQuery pagination);
 
@@ -22,7 +22,6 @@ namespace PersonalBudgetTrackerAPI.Services.Interfaces
             decimal? maxPriority,
             PaginationQuery pagination);
 
-        Task<PagedResult<CategoryDetailsDto>> GetCategoriesWithDetailsAsync(PaginationQuery pagination);
 
     }
 }

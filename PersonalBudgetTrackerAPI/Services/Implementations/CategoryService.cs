@@ -71,16 +71,33 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
             await _context.SaveChangesAsync();
         }
 
-
-        public async Task<CategoryDto> GetCategoryByIdAsync(Guid id)
+        public async Task<CategoryDetailsDto> GetCategoryByIdAsync(Guid id)
         {
-            var category = await _context.Category
-                .FirstOrDefaultAsync(c => c.Id == id)
-                ?? throw new NotFoundException("Category not found");
+            var categoryDetails = await _context.Set<Expense>()
+                .Where(e => e.CategoryId == id)
+                .GroupBy(e => new { e.CategoryId, e.Category.Title, e.Category.Details, e.Category.IsNeedful, e.Category.NeedPriority })
+                .Select(g => new CategoryDetailsDto
+                {
+                    CategoryId = g.Key.CategoryId,
+                    Title = g.Key.Title,
+                    Details = g.Key.Details,
+                    IsNeedful = g.Key.IsNeedful,
+                    NeedPriority = g.Key.NeedPriority,
+                    UsageCount = g.Count(),
+                    TotalExpense = g.Sum(e => e.Amount),
+                })
+                .FirstOrDefaultAsync();
 
-            return category.ToDto();
+            if (categoryDetails == null)
+                throw new NotFoundException("Category not found or has no expenses");
+
+            var partners = await _transactionPartnerService
+                .GetPartnersByCategoryIdAsync(categoryDetails.CategoryId);
+
+            categoryDetails.TransactionPartners = partners;
+
+            return categoryDetails;
         }
-
 
 
         public async Task<PagedResult<CategoryDto>> GetCategoriesAsync(PaginationQuery pagination)
@@ -109,62 +126,6 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
                 PageSize = pagination.PageSize
             };
         }
-
-        public async Task<PagedResult<CategoryDetailsDto>> GetCategoriesWithDetailsAsync(PaginationQuery pagination)
-        {
-            var query = _context.Set<Expense>()
-                .GroupBy(e => new { e.CategoryId, e.Category.Title, e.Category.Details })
-                .Select( g  => new CategoryDetailsDto
-                {
-                    CategoryId = g.Key.CategoryId,
-                    Title = g.Key.Title,
-                    Details = g.Key.Details,
-                    UsageCount = g.Count(),
-                    TotalExpense = g.Sum(e => e.Amount),
-                })
-                .OrderByDescending(x => x.UsageCount);
-
-            var total = await query.CountAsync();
-
-            if (total < 1)
-            {
-                throw new NotFoundException("there is no any categories");
-            }
-
-            var items = await query
-                .Skip((pagination.Page - 1) * pagination.PageSize)
-                .Take(pagination.PageSize)
-                .ToListAsync();
-
-            var result = new List<CategoryDetailsDto>();
-
-            foreach (var item in items)
-            {
-                var partners = await _transactionPartnerService
-                    .GetPartnersByCategoryIdAsync(item.CategoryId);
-
-                result.Add(new CategoryDetailsDto
-                {
-                    CategoryId = item.CategoryId,
-                    Title = item.Title,
-                    Details = item.Details,
-                    UsageCount = item.UsageCount,
-                    TotalExpense = item.TotalExpense,
-                    TransactionPartners = partners
-                });
-            }
-
-
-            return new PagedResult<CategoryDetailsDto>
-            {
-                Items = result,
-                TotalCount = total,
-                Page = pagination.Page,
-                PageSize = pagination.PageSize
-            };
-        }
-
-
 
         public async Task<PagedResult<CategoryDto>> SearchCategoriesAsync(
          string? search,
