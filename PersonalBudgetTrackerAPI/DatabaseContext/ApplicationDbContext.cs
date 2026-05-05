@@ -36,19 +36,19 @@ namespace PersonalBudgetTrackerAPI.DatabaseContext
             .HasValue<Expense>("Expense");
 
             modelBuilder.Entity<Transaction>()
-                .HasQueryFilter(t => !t.IsDeleted );//&& t.CreatedBy == _currentUserService.UserId);
+                .HasQueryFilter(t => !t.IsDeleted && t.CreatedBy == _currentUserService.UserId);
 
             modelBuilder.Entity<Category>()
-                .HasQueryFilter(c => !c.IsDeleted );//&& c.CreatedBy == _currentUserService.UserId);
+                .HasQueryFilter(c => !c.IsDeleted && c.CreatedBy == _currentUserService.UserId);
 
             modelBuilder.Entity<PaymentGateway>()
-                .HasQueryFilter(p => !p.IsDeleted);//&& p.CreatedBy == _currentUserService.UserId);
+                .HasQueryFilter(p => !p.IsDeleted && p.CreatedBy == _currentUserService.UserId);
 
             modelBuilder.Entity<Reason>()
-                .HasQueryFilter(r => !r.IsDeleted);// && r.CreatedBy == _currentUserService.UserId);
+                .HasQueryFilter(r => !r.IsDeleted && r.CreatedBy == _currentUserService.UserId);
 
             modelBuilder.Entity<TransactionPartner>()
-                .HasQueryFilter(tp => !tp.IsDeleted );//&& tp.CreatedBy == _currentUserService.UserId);
+                .HasQueryFilter(tp => !tp.IsDeleted && tp.CreatedBy == _currentUserService.UserId);
 
             base.OnModelCreating(modelBuilder);
         }
