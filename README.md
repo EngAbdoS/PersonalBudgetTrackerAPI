@@ -842,6 +842,48 @@ flowchart TD
 
 ---
 
+### 3. 🤖 Smart Auto-Categorization & Initialization
+
+**Purpose**: Reduce the friction of setting up a new account and categorizing transactions.
+
+#### Concept & Behavior
+- **Default Categories**: When a user starts using the app for the first time, the system will automatically create a baseline of the most used expense categories (e.g., Food, Transportation, Utilities) so they don't have to start from scratch.
+- **Smart Assignment**: Over time, the API can suggest the most likely category for a new expense based on the transaction title or partner.
+
+---
+
+### 4. 🔁 Recurring Payments & Subscriptions
+
+**Purpose**: Track and manage regular monthly payments with an integrated approval flow.
+
+#### Concept & Behavior
+- **Subscription Tracking**: Users can register recurring payments (e.g., Netflix, Gym memberships, Rent) specifying the amount and billing cycle.
+- **Confirmation Flow**: When the due date arrives, the system queues a pending payment and asks the user for confirmation (e.g., *"Did you pay $15 for Netflix this month?"*). Once confirmed, it is recorded as an expense.
+- **Missed Payment Alerts**: Notify the user if a recurring payment date has passed without confirmation.
+
+---
+
+### 5. 💬 Interactive Spending Prompts
+
+**Purpose**: Proactively engage the user to capture unrecorded daily expenses using conversational prompts.
+
+#### Concept & Behavior
+- **Daily Check-ins**: The system sends a daily or periodic notification asking conversational questions like, *"Did you spend any money on food today? How much?"*.
+- **Quick Logging**: Responses to these prompts bypass the standard form entry and automatically create the corresponding `Expense` transaction linked to the predicted category.
+
+---
+
+### 6. 💵 "Cash in Hand" (Withdrawn Funds) Bucket
+
+**Purpose**: Track money that has been withdrawn from a bank or digital wallet (e.g., ATM withdrawal) but hasn't been spent yet, so the user knows exactly how much physical cash they are holding.
+
+#### Concept & Behavior
+- **Dedicated Cash State**: Introduce a special built-in "Cash in Hand" bucket (or automatically generated default Payment Gateway) specifically for withdrawn money.
+- **Withdrawal Action**: When a user goes to an ATM, they record a "Withdrawal" rather than an expense. The system deducts the amount from the source gateway (e.g., Visa) and adds it to the user's "Cash in Hand" balance.
+- **Spending Cash**: When the user later buys something with that physical cash, they record the expense and select "Cash in Hand" as the payment source, finally deducting it from their overall balance.
+
+---
+
 ## 📄 License
 
 This project is licensed under the **MIT License**.
