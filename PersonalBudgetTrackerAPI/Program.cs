@@ -33,6 +33,7 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(
 );
 
 builder.Services.AddScoped<ITokenStore, RedisTokenStore>();
+builder.Services.AddScoped<IDaySnapshotService, RedisDaySnapshotService>();
 builder.Services.AddTransient<IJwtService, JwtService>();
 builder.Services.AddScoped<IAuthorizationHandler, DbRoleHandler>();
 // For Identity
