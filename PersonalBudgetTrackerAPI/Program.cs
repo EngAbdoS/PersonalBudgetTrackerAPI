@@ -90,6 +90,7 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IPaymentGatewayService, PaymentGatewayService>();
 builder.Services.AddScoped<ITransactionPartnerService, TransactionPartnerService>();
 builder.Services.AddScoped<ITransactionService, TransactionService>();
+builder.Services.AddScoped<IFinanialRuleService, FinanialRuleService>();
 
 
 builder.Services.AddOpenApi();
