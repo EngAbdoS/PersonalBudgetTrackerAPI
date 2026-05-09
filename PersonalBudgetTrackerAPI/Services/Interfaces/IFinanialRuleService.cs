@@ -31,34 +31,10 @@ namespace PersonalBudgetTrackerAPI.Services.Interfaces
             UpdateSavingRuleDto dto);
 
 
-
-        Task<PagedResult<ExpenseLimitRuleDto>> GetExpenseLimitRulesAsync(
-            int page,
-            int pageSize);
-
-        Task<PagedResult<MinimumBalanceRuleDto>> GetMinimumBalanceRulesAsync(
-            int page,
-            int pageSize);
-
-        Task<PagedResult<SavingRuleDto>> GetSavingGoalRulesAsync(
-            int page,
-            int pageSize);
-
         Task<List<SavingGoalStatusDto>> GetSavingGoalsStatusAsync();
 
-        Task<PagedResult<FinancialRuleBaseDto>> SearchRulesAsync(
-        FinancialRuleSearchFilterDto filter);
-
-
-
-
-
-
-
-
-
-
-
+        Task<PagedResult<FinancialRuleBaseDto>> GetUserRulesAsync(
+        FinancialRuleFilterDto filter);
 
         Task DeactivateRuleAsync(Guid id);
 

@@ -3,7 +3,7 @@ using PersonalBudgetTrackerAPI.Models.FinancialPrefrances;
 
 namespace PersonalBudgetTrackerAPI.DTOs.FinanialPrefrancesDTOs.FinanialRulesBaseDTOs
 {
-    public class FinancialRuleSearchFilterDto : PaginationQuery
+    public class FinancialRuleFilterDto : PaginationQuery
     {
         public string? Search { get; set; }
 
