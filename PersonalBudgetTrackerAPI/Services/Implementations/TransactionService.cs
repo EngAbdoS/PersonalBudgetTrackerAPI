@@ -15,18 +15,24 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
         private readonly IReasonService _reasonService;
         private readonly ICategoryService _categoryService;
         private readonly IPaymentGatewayService _gatewayService;
+        private readonly IDaySnapshotService _snapshotService;
+        private readonly ICurrentUserService _currentUserService;
 
         public TransactionService(ApplicationDbContext context,
             ITransactionPartnerService partnerService,
             IReasonService reasonService,
             ICategoryService categoryService,
-            IPaymentGatewayService gatewayService)
+            IPaymentGatewayService gatewayService,
+            IDaySnapshotService snapshotService,
+            ICurrentUserService currentUserService)
         {
             _context = context;
             _partnerService = partnerService;
             _reasonService = reasonService;
             _categoryService = categoryService;
             _gatewayService = gatewayService;
+            _snapshotService = snapshotService;
+            _currentUserService = currentUserService;
         }
         public async Task<TransactionDto> CreateAsync(CreateTransactionDto dto)
         {
@@ -58,7 +64,7 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
 
             if (dto.TransactionPartnerId.HasValue)
             {
-                if(await _partnerService.TransactionPartnerValidAndExist(dto.TransactionPartnerId.Value) == false)
+                if (await _partnerService.TransactionPartnerValidAndExist(dto.TransactionPartnerId.Value) == false)
                     throw new NotFoundException("Invalid transaction partner");
                 partnerId = dto.TransactionPartnerId.Value;
 
@@ -112,6 +118,13 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
 
                 await _context.SaveChangesAsync();
 
+                _ = _snapshotService.ApplyIncomeAsync(
+                                      userId: _currentUserService.UserId!,
+                                      gatewayId: income.PaymentGatewayId,
+                                      partnerId: income.TransactionPartnerId,
+                                      amount: income.Amount,
+                                      transactionDate: income.Date);
+
                 return income.ToDto();
             }
 
@@ -154,6 +167,14 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
             _context.Add(expense);
 
             await _context.SaveChangesAsync();
+
+            _ = _snapshotService.ApplyExpenseAsync(
+                              userId: _currentUserService.UserId!,
+                              gatewayId: expense.PaymentGatewayId,
+                              categoryId: expense.CategoryId,
+                              partnerId: expense.TransactionPartnerId,
+                              amount: expense.Amount,
+                              transactionDate: expense.Date);
 
             return expense.ToDto();
         }
