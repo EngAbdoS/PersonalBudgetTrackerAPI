@@ -16,14 +16,33 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
     public class FinanialRuleService : IFinanialRuleService
     {
         private readonly ApplicationDbContext _context;
+        private readonly ICategoryService _categoryService;
+        private readonly ITransactionPartnerService _transactionPartnerService;
+        private readonly IPaymentGatewayService _paymentGatewayService;
 
-        public FinanialRuleService(ApplicationDbContext context)
+        public FinanialRuleService(
+            ApplicationDbContext context, 
+            ICategoryService categoryService, 
+            ITransactionPartnerService transactionPartnerService, 
+            IPaymentGatewayService paymentGatewayService)
         {
             _context = context;
+            _categoryService = categoryService;
+            _transactionPartnerService = transactionPartnerService;
+            _paymentGatewayService = paymentGatewayService;
         }
 
         public async Task<ExpenseLimitRuleDto> CreateExpenseLimitRuleAsync(CreateExpenseLimitRuleDto dto)
         {
+            if (dto.PaymentGatewayId.HasValue && !await _paymentGatewayService.PaymentGatewayValidAndExist(dto.PaymentGatewayId.Value))
+                throw new NotFoundException("Payment gateway not found.");
+
+            if (dto.CategoryId.HasValue && !await _categoryService.CategoryValidAndExist(dto.CategoryId.Value))
+                throw new NotFoundException("Category not found.");
+
+            if (dto.TransactionPartnerId.HasValue && !await _transactionPartnerService.TransactionPartnerValidAndExist(dto.TransactionPartnerId.Value))
+                throw new NotFoundException("Transaction partner not found.");
+
             var rule = new ExpenseLimitRule
             {
                 Id = Guid.NewGuid(),
@@ -66,6 +85,9 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
 
         public async Task<MinimumBalanceRuleDto> CreateMinimumBalanceRuleAsync(CreateMinimumBalanceRuleDto dto)
         {
+            if (dto.PaymentGatewayId.HasValue && !await _paymentGatewayService.PaymentGatewayValidAndExist(dto.PaymentGatewayId.Value))
+                throw new NotFoundException("Payment gateway not found.");
+
             var rule = new MinimumBalanceRule
             {
                 Id = Guid.NewGuid(),
@@ -103,6 +125,9 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
 
         public async Task<SavingRuleDto> CreateSavingRuleAsync(CreateSavingRuleDto dto)
         {
+            if (dto.PaymentGatewayId.HasValue && !await _paymentGatewayService.PaymentGatewayValidAndExist(dto.PaymentGatewayId.Value))
+                throw new NotFoundException("Payment gateway not found.");
+
             var rule = new SavingRule
             {
                 Id = Guid.NewGuid(),
@@ -140,6 +165,15 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
 
         public async Task<ExpenseLimitRuleDto> UpdateExpenseLimitRuleAsync(Guid id, UpdateExpenseLimitRuleDto dto)
         {
+            if (dto.PaymentGatewayId.HasValue && !await _paymentGatewayService.PaymentGatewayValidAndExist(dto.PaymentGatewayId.Value))
+                throw new NotFoundException("Payment gateway not found.");
+
+            if (dto.CategoryId.HasValue && !await _categoryService.CategoryValidAndExist(dto.CategoryId.Value))
+                throw new NotFoundException("Category not found.");
+
+            if (dto.TransactionPartnerId.HasValue && !await _transactionPartnerService.TransactionPartnerValidAndExist(dto.TransactionPartnerId.Value))
+                throw new NotFoundException("Transaction partner not found.");
+
             var rule = await _context.FinancialRules.OfType<ExpenseLimitRule>().FirstOrDefaultAsync(r => r.Id == id);
             if (rule == null)
                 throw new NotFoundException("Expense limit rule not found.");
@@ -189,6 +223,9 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
 
         public async Task<MinimumBalanceRuleDto> UpdateMinimumBalanceRuleAsync(Guid id, UpdateMinimumBalanceRuleDto dto)
         {
+            if (dto.PaymentGatewayId.HasValue && !await _paymentGatewayService.PaymentGatewayValidAndExist(dto.PaymentGatewayId.Value))
+                throw new NotFoundException("Payment gateway not found.");
+
             var rule = await _context.FinancialRules.OfType<MinimumBalanceRule>().FirstOrDefaultAsync(r => r.Id == id);
             if (rule == null)
                 throw new NotFoundException("Minimum balance rule not found.");
@@ -231,6 +268,9 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
 
         public async Task<SavingRuleDto> UpdateSavingRuleAsync(Guid id, UpdateSavingRuleDto dto)
         {
+            if (dto.PaymentGatewayId.HasValue && !await _paymentGatewayService.PaymentGatewayValidAndExist(dto.PaymentGatewayId.Value))
+                throw new NotFoundException("Payment gateway not found.");
+
             var rule = await _context.FinancialRules.OfType<SavingRule>().FirstOrDefaultAsync(r => r.Id == id);
             if (rule == null)
                 throw new NotFoundException("Saving rule not found.");
