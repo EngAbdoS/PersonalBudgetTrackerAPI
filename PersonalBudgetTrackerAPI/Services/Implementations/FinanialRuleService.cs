@@ -7,6 +7,7 @@ using PersonalBudgetTrackerAPI.DTOs.FinanialPrefrancesDTOs.FinanialRuleDTOs;
 using PersonalBudgetTrackerAPI.DTOs.FinanialPrefrancesDTOs.FinanialRulesBaseDTOs;
 using PersonalBudgetTrackerAPI.DTOs.FinanialPrefrancesDTOs.MinimumBalanceRuleDTOs;
 using PersonalBudgetTrackerAPI.DTOs.FinanialPrefrancesDTOs.SavingRuleDTOs;
+using PersonalBudgetTrackerAPI.Common.Utilities;
 using PersonalBudgetTrackerAPI.Models.FinancialPrefrances;
 using PersonalBudgetTrackerAPI.Services.Interfaces;
 
@@ -43,6 +44,13 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
                 IsActive = true
             };
 
+            if (rule.PeriodType != PeriodType.Custom)
+            {
+                var (start, end) = PeriodResolver.Resolve(rule, DateTime.UtcNow);
+                rule.PeriodStart = start;
+                rule.PeriodEnd = end;
+            }
+
             _context.FinancialRules.Add(rule);
             await _context.SaveChangesAsync();
 
@@ -75,6 +83,13 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
                 IsActive = true
             };
 
+            if (rule.PeriodType != PeriodType.Custom)
+            {
+                var (start, end) = PeriodResolver.Resolve(rule, DateTime.UtcNow);
+                rule.PeriodStart = start;
+                rule.PeriodEnd = end;
+            }
+
             _context.FinancialRules.Add(rule);
             await _context.SaveChangesAsync();
 
@@ -104,6 +119,13 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
                 RecurrencePeriod = dto.RecurrencePeriod,
                 IsActive = true
             };
+
+            if (rule.PeriodType != PeriodType.Custom)
+            {
+                var (start, end) = PeriodResolver.Resolve(rule, DateTime.UtcNow);
+                rule.PeriodStart = start;
+                rule.PeriodEnd = end;
+            }
 
             _context.FinancialRules.Add(rule);
             await _context.SaveChangesAsync();
@@ -146,6 +168,13 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
             rule.CategoryId = dto.CategoryId ?? rule.CategoryId;
             rule.TransactionPartnerId = dto.TransactionPartnerId ?? rule.TransactionPartnerId;
 
+            if (rule.PeriodType != PeriodType.Custom)
+            {
+                var (start, end) = PeriodResolver.Resolve(rule, DateTime.UtcNow);
+                rule.PeriodStart = start;
+                rule.PeriodEnd = end;
+            }
+
             await _context.SaveChangesAsync();
 
             var loadedRule = await _context.FinancialRules
@@ -183,6 +212,13 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
 
             if (dto.IsActive.HasValue) rule.IsActive = dto.IsActive.Value;
 
+            if (rule.PeriodType != PeriodType.Custom)
+            {
+                var (start, end) = PeriodResolver.Resolve(rule, DateTime.UtcNow);
+                rule.PeriodStart = start;
+                rule.PeriodEnd = end;
+            }
+
             await _context.SaveChangesAsync();
 
             var loadedRule = await _context.FinancialRules
@@ -217,6 +253,13 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
             rule.RecurrencePeriod = dto.RecurrencePeriod ?? rule.RecurrencePeriod;
 
             if (dto.IsActive.HasValue) rule.IsActive = dto.IsActive.Value;
+
+            if (rule.PeriodType != PeriodType.Custom)
+            {
+                var (start, end) = PeriodResolver.Resolve(rule, DateTime.UtcNow);
+                rule.PeriodStart = start;
+                rule.PeriodEnd = end;
+            }
 
             await _context.SaveChangesAsync();
 
