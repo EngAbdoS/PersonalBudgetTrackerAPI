@@ -1,5 +1,11 @@
 ﻿namespace PersonalBudgetTrackerAPI.DTOs.FinanialPrefrancesDTOs.DailySnapshot
 {
+    public class UserDailySnapshotDto
+    {
+        public Guid UserId { get; set; }
+        public DateOnly Date { get; set; }
+        public DailySnapshot Snapshot { get; set; } = null!;
+    }
     public class DailySnapshot
     {
         public decimal TotalIncome { get; set; }

@@ -7,8 +7,8 @@ namespace PersonalBudgetTrackerAPI.Services.Interfaces
         Task ApplyExpenseAsync(string userId, Guid gatewayId, Guid categoryId, Guid partnerId, decimal amount, DateTime transactionDate);
         Task ApplyIncomeAsync(string userId, Guid gatewayId, Guid partnerId, decimal amount, DateTime transactionDate);
         Task<DailySnapshot?> GetTodaySnapshotAsync(string userId);
-        Task<Dictionary<string, DailySnapshot>> GetYesterdaySnapshotsForAllUsersAsync();
-        Task<Dictionary<string, DailySnapshot>> GetCurrentDaySnapshotsForAllUsersAsync();
+        Task<IEnumerable<UserDailySnapshotDto>> GetYesterdaySnapshotsForAllUsersAsync();
+        Task<IEnumerable<UserDailySnapshotDto>> GetCurrentDaySnapshotsForAllUsersAsync();
 
     }
 }
