@@ -33,3 +33,6 @@ PublishProfiles/
 # OS
 .DS_Store
 Thumbs.db
+
+docker/redis/data/
+docker/mongo/data/
