@@ -18,7 +18,7 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
             var db = client.GetDatabase(settings.Value.DatabaseName);
 
             _collection = db.GetCollection<MonthlySnapshotDocument>(
-                settings.Value.SnapshotsCollection);
+                settings.Value.DailySnapshotsCollection);
 
             EnsureIndexes();
         }
