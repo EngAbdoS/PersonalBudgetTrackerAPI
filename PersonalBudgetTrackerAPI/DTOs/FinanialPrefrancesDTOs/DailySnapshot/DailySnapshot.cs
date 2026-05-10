@@ -8,6 +8,7 @@
     }
     public class DailySnapshot
     {
+        public int TotalTransactions { get; set; }
         public decimal TotalIncome { get; set; }
         public decimal TotalExpense { get; set; }
 

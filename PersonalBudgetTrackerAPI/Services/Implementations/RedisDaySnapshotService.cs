@@ -48,6 +48,7 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
 
             var tasks = new Task[]
             {
+            batch.HashIncrementAsync(key, "totalTransactions", 1),
             batch.HashIncrementAsync(key, "totalExpense",                          (double)amount),
             batch.HashIncrementAsync(key, GatewayExpense(gatewayId),               (double)amount),
             batch.HashIncrementAsync(key, GatewayCategory(gatewayId, categoryId),  (double)amount),
@@ -73,10 +74,11 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
             var batch = _db.CreateBatch();
 
             var tasks = new Task[]
-            {
-            batch.HashIncrementAsync(key, "totalIncome",               (double)amount),
-            batch.HashIncrementAsync(key, GatewayIncome(gatewayId),    (double)amount),
-            batch.HashIncrementAsync(key, IncomePartner(partnerId),     (double)amount),
+            {        
+            batch.HashIncrementAsync(key, "totalTransactions", 1),
+            batch.HashIncrementAsync(key, "totalIncome", (double)amount),
+            batch.HashIncrementAsync(key, GatewayIncome(gatewayId), (double)amount),
+            batch.HashIncrementAsync(key, IncomePartner(partnerId), (double)amount),
             batch.KeyExpireAsync(key, TimeSpan.FromHours(_ttlHours))
             };
 
@@ -138,6 +140,9 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
 
                 switch (name.Split(':'))
                 {
+                    case ["totalTransactions"]:
+                        snapshot.TotalTransactions = (int)value; break;
+
                     case ["totalIncome"]:
                         snapshot.TotalIncome = value; break;
 
