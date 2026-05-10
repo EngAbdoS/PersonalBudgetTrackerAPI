@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Serializers;
+using MongoDB.Driver;
 using PersonalBudgetTrackerAPI;
 using PersonalBudgetTrackerAPI.Authorization.Handlers;
 using PersonalBudgetTrackerAPI.Authorization.Policies;
@@ -12,6 +15,7 @@ using PersonalBudgetTrackerAPI.Authorization.Requirements;
 using PersonalBudgetTrackerAPI.DatabaseContext;
 using PersonalBudgetTrackerAPI.Identity;
 using PersonalBudgetTrackerAPI.Middleware;
+using PersonalBudgetTrackerAPI.MongoDB.Settings;
 using PersonalBudgetTrackerAPI.Services.Implementations;
 using PersonalBudgetTrackerAPI.Services.Interfaces;
 using Scalar.AspNetCore;
@@ -31,6 +35,15 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddSingleton<IConnectionMultiplexer>(
     ConnectionMultiplexer.Connect(builder.Configuration["Redis:ConnectionString"]!)
 );
+builder.Services.Configure<MongoDbSettings>( builder.Configuration.GetSection("MongoDB"));
+BsonSerializer.RegisterSerializer(new DateOnlySerializer());
+
+builder.Services.AddSingleton<IMongoClient>(sp =>
+    new MongoClient(
+        builder.Configuration["MongoDB:ConnectionString"]));
+
+
+
 
 builder.Services.AddScoped<ITokenStore, RedisTokenStore>();
 builder.Services.AddScoped<IDaySnapshotService, RedisDaySnapshotService>();
