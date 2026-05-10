@@ -91,35 +91,42 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
             return fields.Length == 0 ? null : Deserialize(fields);
         }
 
+        public async IAsyncEnumerable<UserDailySnapshotDto> GetYesterdaySnapshotsForAllUsersAsync()
+        {
+            await foreach (var record in ScanSnapshotsAsync(Yesterday))
+                yield return record;
+        }
 
-        public Task<IEnumerable<UserDailySnapshotDto>> GetYesterdaySnapshotsForAllUsersAsync() =>
-            ScanSnapshotsAsync(Yesterday);
-
-        public Task<IEnumerable<UserDailySnapshotDto>> GetCurrentDaySnapshotsForAllUsersAsync() =>
-            ScanSnapshotsAsync(Today);
-        private async Task<IEnumerable<UserDailySnapshotDto>> ScanSnapshotsAsync(DateOnly date)
+        public async IAsyncEnumerable<UserDailySnapshotDto> GetCurrentDaySnapshotsForAllUsersAsync()
+        {
+            await foreach (var record in ScanSnapshotsAsync(Today))
+                yield return record;
+        }
+      
+        public async Task DeleteSnapshotAsync(string  userId, DateOnly date)
+        {
+            await _db.KeyDeleteAsync(SnapshotKey(userId, date));
+        }
+        private async IAsyncEnumerable<UserDailySnapshotDto> ScanSnapshotsAsync(DateOnly date)
         {
             var pattern = $"finance:*:{date:yyyy-MM-dd}";
-            var result = new List<UserDailySnapshotDto>();
 
-            await foreach (var key in _server.KeysAsync(pattern: pattern))
+            await foreach (var key in _server.KeysAsync(pattern: pattern, pageSize: 100))
             {
                 var parts = key.ToString().Split(':');
                 var userId = Guid.Parse(parts[1]);
-
                 var fields = await _db.HashGetAllAsync(key);
-                if (fields.Length > 0)
-                    result.Add(new UserDailySnapshotDto
-                    {
-                        UserId = userId,
-                        Date = date,
-                        Snapshot = Deserialize(fields)
-                    });
+
+                if (fields.Length == 0) continue;
+
+                yield return new UserDailySnapshotDto
+                {
+                    UserId = userId,
+                    Date = date,
+                    Snapshot = Deserialize(fields)
+                };
             }
-
-            return result;
         }
-
         private static DailySnapshot Deserialize(HashEntry[] fields)
         {
             var snapshot = new DailySnapshot();
