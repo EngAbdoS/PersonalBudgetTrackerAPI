@@ -12,13 +12,13 @@ namespace PersonalBudgetTrackerAPI.DTOs.FinanialPrefrancesDTOs.FinanialRulesBase
         public Guid? PaymentGatewayId { get; set; }
 
 
-        public LimitTargetType TargetType { get; set; }
+        public LimitTargetType? TargetType { get; set; }
         public Guid? CategoryId { get; set; }
         public Guid? TransactionPartnerId { get; set; }
 
 
-        public DateTime? PeriodStart { get; set; }
-        public DateTime? PeriodEnd { get; set; }
+        public DateOnly From { get; set; }
+        public DateOnly To { get; set; }
     }
 
 
@@ -31,8 +31,8 @@ namespace PersonalBudgetTrackerAPI.DTOs.FinanialPrefrancesDTOs.FinanialRulesBase
             {
                 ScopeType = rule.ScopeType,
                 PaymentGatewayId = rule.PaymentGatewayId,
-                PeriodStart = rule.PeriodStart,
-                PeriodEnd = rule.PeriodEnd
+                From = DateOnly.FromDateTime(rule.PeriodStart??DateTime.UtcNow),
+                To = DateOnly.FromDateTime(rule.PeriodEnd??DateTime.UtcNow)
             };
 
             switch (rule)
@@ -44,9 +44,10 @@ namespace PersonalBudgetTrackerAPI.DTOs.FinanialPrefrancesDTOs.FinanialRulesBase
                     break;
 
                 case MinimumBalanceRuleDto:
-
+                    dto.TargetType = null;
                     break;
                 case SavingRuleDto:
+                    dto.TargetType = null;
 
                     break;
 

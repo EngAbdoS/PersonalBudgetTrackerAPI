@@ -1,5 +1,6 @@
 ﻿using PersonalBudgetTrackerAPI.DTOs.FinanialPrefrancesDTOs.DailySnapshot;
 using PersonalBudgetTrackerAPI.DTOs.FinanialPrefrancesDTOs.FinanialRulesBaseDTOs;
+using PersonalBudgetTrackerAPI.Models.FinancialPrefrances;
 using PersonalBudgetTrackerAPI.Services.Interfaces;
 
 namespace PersonalBudgetTrackerAPI.Services.Implementations
@@ -56,9 +57,76 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
 
 
 
-        public Task<decimal> AggregiateTotalExpense(RuleAggregiationInputDTO inputDTO)
+        public async Task<decimal> AggregiateTotalExpense(RuleAggregiationInputDTO input)
         {
-            throw new NotImplementedException();
+            var DailySnapshots = await GetDailySnapshotsAsync(input.From, input.To);
+            var snapshots = DailySnapshots.Select(s => s.Snapshot);
+
+            return input.TargetType switch
+            {
+                LimitTargetType.All or null =>
+                    AggregateTotalExpense(snapshots, input.PaymentGatewayId),
+
+                LimitTargetType.Category =>
+                    AggregateTotalCategoryExpense(snapshots, input.CategoryId ?? Guid.Empty, input.PaymentGatewayId),
+
+                LimitTargetType.TransactionPartner =>
+                    AggregateTotalPartnerExpense(snapshots, input.TransactionPartnerId ?? Guid.Empty, input.PaymentGatewayId),
+
+                _ => 0
+            };
+
+
         }
+        public async Task<decimal> AggregiateTotalIncome(DateOnly from, Guid? PaymentGatewayId, DateOnly? to = null)
+        {
+            var dailySnapshots = await GetDailySnapshotsAsync(from, to);
+            var snapshots = dailySnapshots.Select(s => s.Snapshot);
+
+            return PaymentGatewayId is null
+                ? snapshots.Sum(s => s.TotalIncome)
+                : snapshots.Sum(s =>
+                    s.PaymentGateways
+                     .GetValueOrDefault(PaymentGatewayId.ToString()!)?.TotalIncome ?? 0);
+        }
+
+
+        private static decimal AggregateTotalExpense(IEnumerable<DailySnapshot> snapshots,Guid? paymentGatewayId)
+        {
+            return paymentGatewayId is null
+                ? snapshots.Sum(s => s.TotalExpense)
+                : snapshots.Sum(s =>
+                    s.PaymentGateways
+                     .GetValueOrDefault(paymentGatewayId.ToString()!)?.TotalExpense ?? 0);
+        }
+
+        private static decimal AggregateTotalCategoryExpense(IEnumerable<DailySnapshot> snapshots, Guid categoryId, Guid? paymentGatewayId)
+        {
+
+            var catKey = categoryId.ToString();
+
+            return paymentGatewayId is null
+                ? snapshots.Sum(s =>
+                    s.SpendingCategories.GetValueOrDefault(catKey))
+                : snapshots.Sum(s =>
+                    s.PaymentGateways
+                     .GetValueOrDefault(paymentGatewayId.ToString()!)
+                     ?.CategoriesSpendIn.GetValueOrDefault(catKey) ?? 0);
+        }
+        private static decimal AggregateTotalPartnerExpense( IEnumerable<DailySnapshot> snapshots, Guid partnerId, Guid? paymentGatewayId)
+        {
+
+            var partnerKey = partnerId.ToString()!;
+
+            return paymentGatewayId is null
+                ? snapshots.Sum(s =>
+                    s.SpendingPartners.GetValueOrDefault(partnerKey))
+                : snapshots.Sum(s =>
+                    s.PaymentGateways
+                     .GetValueOrDefault(paymentGatewayId.ToString()!)
+                     ?.PartnersSpendWith.GetValueOrDefault(partnerKey) ?? 0);
+        }
+
+      
     }
 }
