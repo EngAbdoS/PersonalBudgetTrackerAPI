@@ -121,7 +121,7 @@ builder.Services.AddScoped<ITransactionService, TransactionService>();
 builder.Services.AddScoped<IFinanialRuleService, FinanialRuleService>();
 builder.Services.AddScoped<IDailySnapshotMongoService, DailySnapshotMongoService>();
 builder.Services.AddScoped<ISnapshotPromotionJob, SnapshotPromotionJob>();
-
+builder.Services.AddScoped<IFinancialAggregatorService, FinancialAggregatorService>();
 
 builder.Services.AddOpenApi();
 
