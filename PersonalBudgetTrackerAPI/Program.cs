@@ -1,5 +1,6 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -42,6 +43,14 @@ builder.Services.AddSingleton<IMongoClient>(sp =>
     new MongoClient(
         builder.Configuration["MongoDB:ConnectionString"]));
 
+
+builder.Services.AddHangfire(config => config
+    .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+    .UseSimpleAssemblyNameTypeSerializer()
+    .UseRecommendedSerializerSettings()
+    .UseSqlServerStorage(builder.Configuration.GetConnectionString("Default")));
+
+builder.Services.AddHangfireServer();
 
 
 
@@ -104,6 +113,8 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IPaymentGatewayService, PaymentGatewayService>();
 builder.Services.AddScoped<ITransactionPartnerService, TransactionPartnerService>();
 builder.Services.AddScoped<ITransactionService, TransactionService>();
+
+
 builder.Services.AddScoped<IFinanialRuleService, FinanialRuleService>();
 builder.Services.AddScoped<IDailySnapshotMongoService, DailySnapshotMongoService>();
 builder.Services.AddScoped<ISnapshotPromotionJob, SnapshotPromotionJob>();
@@ -125,8 +136,26 @@ if (app.Environment.IsDevelopment())
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-    SeedData.Seed(services);
+     SeedData.Seed(services);
 }
+using (var scope = app.Services.CreateScope())
+{
+    var recurringJobManager = scope.ServiceProvider
+        .GetRequiredService<IRecurringJobManager>();
+
+    recurringJobManager.AddOrUpdate<ISnapshotPromotionJob>(
+        recurringJobId: "snapshot-promotion-main",
+        methodCall: job => job.RunAsync(),
+        cronExpression: "5 0 * * *");       // 00:05 UTC daily
+
+    // Double check job — runs at 01:00 every day
+    recurringJobManager.AddOrUpdate<ISnapshotPromotionJob>(
+        recurringJobId: "snapshot-promotion-doublecheck",
+        methodCall: job => job.RunAsync(),
+        cronExpression: "0 1 * * *");
+}
+
+app.UseHangfireDashboard("/hangfire");
 
 app.UseHttpsRedirection();
 
