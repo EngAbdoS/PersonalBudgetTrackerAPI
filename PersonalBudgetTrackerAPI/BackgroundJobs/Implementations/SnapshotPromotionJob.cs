@@ -1,6 +1,7 @@
-﻿using PersonalBudgetTrackerAPI.Services.Interfaces;
+﻿using PersonalBudgetTrackerAPI.BackgroundJobs.Interfaces;
+using PersonalBudgetTrackerAPI.Services.Interfaces;
 
-namespace PersonalBudgetTrackerAPI.Services.Implementations
+namespace PersonalBudgetTrackerAPI.BackgroundJobs.Implementations
 {
     public class SnapshotPromotionJob : ISnapshotPromotionJob
     {

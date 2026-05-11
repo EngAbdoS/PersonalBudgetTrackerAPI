@@ -1,4 +1,4 @@
-﻿namespace PersonalBudgetTrackerAPI.Services.Interfaces
+﻿namespace PersonalBudgetTrackerAPI.BackgroundJobs.Interfaces
 {
     public interface ISnapshotPromotionJob
     {

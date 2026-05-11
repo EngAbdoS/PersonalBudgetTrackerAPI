@@ -13,6 +13,9 @@ using PersonalBudgetTrackerAPI;
 using PersonalBudgetTrackerAPI.Authorization.Handlers;
 using PersonalBudgetTrackerAPI.Authorization.Policies;
 using PersonalBudgetTrackerAPI.Authorization.Requirements;
+using PersonalBudgetTrackerAPI.BackgroundJobs.Implementations;
+using PersonalBudgetTrackerAPI.BackgroundJobs.Interfaces;
+using PersonalBudgetTrackerAPI.BackgroundJobs.Schedulers;
 using PersonalBudgetTrackerAPI.DatabaseContext;
 using PersonalBudgetTrackerAPI.Identity;
 using PersonalBudgetTrackerAPI.Middleware;
@@ -138,22 +141,8 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
      SeedData.Seed(services);
 }
-using (var scope = app.Services.CreateScope())
-{
-    var recurringJobManager = scope.ServiceProvider
-        .GetRequiredService<IRecurringJobManager>();
 
-    recurringJobManager.AddOrUpdate<ISnapshotPromotionJob>(
-        recurringJobId: "snapshot-promotion-main",
-        methodCall: job => job.RunAsync(),
-        cronExpression: "5 0 * * *");       // 00:05 UTC daily
-
-    // Double check job — runs at 01:00 every day
-    recurringJobManager.AddOrUpdate<ISnapshotPromotionJob>(
-        recurringJobId: "snapshot-promotion-doublecheck",
-        methodCall: job => job.RunAsync(),
-        cronExpression: "0 1 * * *");
-}
+SnapshotPromotionJobScheduler.Register(app.Services);
 
 app.UseHangfireDashboard("/hangfire");
 
