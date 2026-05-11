@@ -10,17 +10,21 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
     public class DailySnapshotMongoService : IDailySnapshotMongoService
     {
         private readonly IMongoCollection<MonthlySnapshotDocument> _collection;
+        private readonly ICurrentUserService _user; 
 
         public DailySnapshotMongoService(
             IMongoClient client,
-            IOptions<MongoDbSettings> settings)
+            IOptions<MongoDbSettings> settings,
+            ICurrentUserService user)
         {
+            _user = user;
             var db = client.GetDatabase(settings.Value.DatabaseName);
 
             _collection = db.GetCollection<MonthlySnapshotDocument>(
                 settings.Value.DailySnapshotsCollection);
 
             EnsureIndexes();
+
         }
 
         public async Task<bool> UpsertSnapshotAsync(UserDailySnapshotDto dto)
@@ -53,13 +57,13 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
         }
 
 
-        public async Task<IEnumerable<DailySnapshotDocument>> GetSnapshotsRangeAsync(
-            Guid userId,
+        public async Task<IEnumerable<UserDailySnapshotDto>> GetSnapshotsRangeAsync(
+        
             DateOnly from,
             DateOnly to)
         {
             var monthIds = EachMonth(from, to)
-                .Select(m => BuildMonthlyId(userId, m))
+                .Select(m => BuildMonthlyId(Guid.Parse(_user.UserId!), m))
                 .ToList();
 
             var filter = Builders<MonthlySnapshotDocument>.Filter
@@ -70,12 +74,18 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
                 .ToListAsync();
 
             return monthlyDocs
-                .SelectMany(m => m.Days)
-                .Where(kvp => DateOnly.Parse(kvp.Key) >= from &&
-                              DateOnly.Parse(kvp.Key) <= to)
-                .OrderBy(kvp => kvp.Key)
-                .Select(kvp => kvp.Value)
-                .ToList();
+                   .SelectMany(m => m.Days)
+                   .Where(kvp => DateOnly.Parse(kvp.Key) >= from &&
+                                 DateOnly.Parse(kvp.Key) <= to)
+                   .OrderBy(kvp => kvp.Key)
+                   .Select(kvp => new UserDailySnapshotDto
+                   {
+                       UserId = Guid.Parse(_user.UserId!),
+                       Date = DateOnly.Parse(kvp.Key),
+                       Snapshot = MapToSnapshot(kvp.Value)
+                   })
+                   .ToList();
+
         }
 
 
@@ -104,8 +114,26 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
                 current = current.AddMonths(1);
             }
         }
-
-
+        private static DailySnapshot MapToSnapshot(DailySnapshotDocument doc) => new()
+        {
+            TotalTransactions = doc.TotalTransactions,
+            TotalIncome = doc.TotalIncome,
+            TotalExpense = doc.TotalExpense,
+            SpendingCategories = doc.SpendingCategories,
+            SpendingPartners = doc.SpendingPartners,
+            IncomeFromPartners = doc.IncomeFromPartners,
+            PaymentGateways = doc.PaymentGateways
+        .ToDictionary(
+            kvp => kvp.Key,
+            kvp => new GatewaySnapshot
+            {
+                TotalIncome = kvp.Value.TotalIncome,
+                TotalExpense = kvp.Value.TotalExpense,
+                CategoriesSpendIn = kvp.Value.CategoriesSpendIn,
+                PartnersSpendWith = kvp.Value.PartnersSpendWith
+            })
+        };
+         
         private static DailySnapshotDocument MapToDocument(DailySnapshot snapshot) => new()
         {
             TotalTransactions = snapshot.TotalTransactions,
