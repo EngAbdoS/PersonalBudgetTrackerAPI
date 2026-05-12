@@ -6,4 +6,5 @@
         public enum LimitTargetType { Category, TransactionPartner , All }
         public enum RecurrenceMode { OneTime, Recurring, Manual}
         public enum FinancialRuleType { SavingRule, MinimumBalanceRule, ExpenseLimitRule }
+        public enum RuleStatus { Safe, NearLimit, Violated  }
 }

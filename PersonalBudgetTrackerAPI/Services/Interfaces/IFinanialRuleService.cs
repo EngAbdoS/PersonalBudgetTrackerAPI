@@ -9,32 +9,21 @@ namespace PersonalBudgetTrackerAPI.Services.Interfaces
 {
     public interface IFinanialRuleService
     {
-        Task<ExpenseLimitRuleDto> CreateExpenseLimitRuleAsync(
-          CreateExpenseLimitRuleDto dto);
+        Task<ExpenseLimitRuleDto> CreateExpenseLimitRuleAsync( CreateExpenseLimitRuleDto dto);
 
-        Task<MinimumBalanceRuleDto> CreateMinimumBalanceRuleAsync(
-            CreateMinimumBalanceRuleDto dto);
+        Task<MinimumBalanceRuleDto> CreateMinimumBalanceRuleAsync( CreateMinimumBalanceRuleDto dto);
 
-        Task<SavingRuleDto> CreateSavingRuleAsync(
-            CreateSavingRuleDto dto);
+        Task<SavingRuleDto> CreateSavingRuleAsync( CreateSavingRuleDto dto);
 
-        Task<ExpenseLimitRuleDto> UpdateExpenseLimitRuleAsync(
-            Guid id,
-            UpdateExpenseLimitRuleDto dto);
+        Task<ExpenseLimitRuleDto> UpdateExpenseLimitRuleAsync( Guid id, UpdateExpenseLimitRuleDto dto);
 
-        Task<MinimumBalanceRuleDto> UpdateMinimumBalanceRuleAsync(
-            Guid id,
-            UpdateMinimumBalanceRuleDto dto);
+        Task<MinimumBalanceRuleDto> UpdateMinimumBalanceRuleAsync( Guid id, UpdateMinimumBalanceRuleDto dto);
 
-        Task<SavingRuleDto> UpdateSavingRuleAsync(
-            Guid id,
-            UpdateSavingRuleDto dto);
-
+        Task<SavingRuleDto> UpdateSavingRuleAsync( Guid id, UpdateSavingRuleDto dto);
 
         Task<List<SavingGoalStatusDto>> GetSavingGoalsStatusAsync();
 
-        Task<PagedResult<FinancialRuleBaseDto>> GetUserRulesAsync(
-        FinancialRuleFilterDto filter);
+        Task<PagedResult<FinancialRuleBaseDto>> GetUserRulesAsync( FinancialRuleFilterDto filter);
 
         Task DeactivateRuleAsync(Guid id);
 
