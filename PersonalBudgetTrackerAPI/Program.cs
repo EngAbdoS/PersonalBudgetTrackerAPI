@@ -116,7 +116,7 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IPaymentGatewayService, PaymentGatewayService>();
 builder.Services.AddScoped<ITransactionPartnerService, TransactionPartnerService>();
 builder.Services.AddScoped<ITransactionService, TransactionService>();
-
+builder.Services.AddScoped<IPendingTransactionCacheService, PendingTransactionCacheService>();
 
 builder.Services.AddScoped<IFinanialRuleService, FinanialRuleService>();
 builder.Services.AddScoped<IDailySnapshotMongoService, DailySnapshotMongoService>();
