@@ -90,6 +90,20 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
                      .GetValueOrDefault(PaymentGatewayId.ToString()!)?.TotalIncome ?? 0);
         }
 
+        public async Task<decimal> AggregateTotalBalance( DateOnly from,Guid? paymentGatewayId,DateOnly? to = null)
+        {
+            var dailySnapshots = await GetDailySnapshotsAsync(from, to);
+            var snapshots = dailySnapshots.Select(s => s.Snapshot);
+
+            return paymentGatewayId is null
+                ? snapshots.Sum(s => s.TotalIncome - s.TotalExpense)
+                : snapshots.Sum(s =>
+                {
+                    var gw = s.PaymentGateways.GetValueOrDefault(paymentGatewayId.ToString()!);
+                    return (gw?.TotalIncome ?? 0) - (gw?.TotalExpense ?? 0);
+                });
+        }
+
 
         private static decimal AggregateTotalExpense(IEnumerable<DailySnapshot> snapshots,Guid? paymentGatewayId)
         {

@@ -12,5 +12,7 @@ namespace PersonalBudgetTrackerAPI.Services.Interfaces
 
         Task<decimal> AggregiateTotalIncome(DateOnly from, Guid? PaymentGatewayId , DateOnly? to = null);
 
+        Task<decimal> AggregateTotalBalance( DateOnly from,Guid? paymentGatewayId, DateOnly? to = null);
+
     }
 }
