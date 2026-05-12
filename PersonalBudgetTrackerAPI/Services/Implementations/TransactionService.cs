@@ -17,6 +17,8 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
         private readonly IPaymentGatewayService _gatewayService;
         private readonly IDaySnapshotService _snapshotService;
         private readonly ICurrentUserService _currentUserService;
+        private readonly ITransactionValidationService _validationService;
+        private readonly IPendingTransactionCacheService _pendingCache;
 
         public TransactionService(ApplicationDbContext context,
             ITransactionPartnerService partnerService,
@@ -24,7 +26,9 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
             ICategoryService categoryService,
             IPaymentGatewayService gatewayService,
             IDaySnapshotService snapshotService,
-            ICurrentUserService currentUserService)
+            ICurrentUserService currentUserService,
+            ITransactionValidationService validationService,
+            IPendingTransactionCacheService pendingCache)
         {
             _context = context;
             _partnerService = partnerService;
@@ -33,8 +37,10 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
             _gatewayService = gatewayService;
             _snapshotService = snapshotService;
             _currentUserService = currentUserService;
+            _validationService = validationService;
+            _pendingCache = pendingCache;
         }
-        public async Task<TransactionDto> CreateAsync(CreateTransactionDto dto)
+        public async Task<CreateTransactionResponse> CreateAsync(CreateTransactionDto dto)
         {
             // =========================
             // 1. PAYMENT GATEWAY
@@ -56,7 +62,6 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
             else
                 throw new BadRequestException("Payment gateway is required");
 
-
             // =========================
             // 2. TRANSACTION PARTNER
             // =========================
@@ -64,10 +69,9 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
 
             if (dto.TransactionPartnerId.HasValue)
             {
-                if (await _partnerService.TransactionPartnerValidAndExist(dto.TransactionPartnerId.Value) == false)
+                if (!await _partnerService.TransactionPartnerValidAndExist(dto.TransactionPartnerId.Value))
                     throw new NotFoundException("Invalid transaction partner");
                 partnerId = dto.TransactionPartnerId.Value;
-
             }
             else if (dto.NewPartner != null)
             {
@@ -88,7 +92,6 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
                 {
                     if (!await _reasonService.ReasonValidAndExist(dto.ReasonId.Value))
                         throw new NotFoundException("Invalid reason");
-
                     reasonId = dto.ReasonId.Value;
                 }
                 else if (!string.IsNullOrWhiteSpace(dto.NewReason))
@@ -106,26 +109,15 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
                     Title = dto.Title,
                     TransactionDetails = dto.TransactionDetails,
                     Date = dto.Date,
-
                     PaymentType = dto.PaymentType,
                     PaymentGatewayId = paymentGatewayId,
                     TransactionPartnerId = partnerId,
-
                     ReasonId = reasonId
                 };
 
-                _context.Add(income);
+                await ApplyTransactionAsync(income);
 
-                await _context.SaveChangesAsync();
-
-                _ = _snapshotService.ApplyIncomeAsync(
-                                      userId: _currentUserService.UserId!,
-                                      gatewayId: income.PaymentGatewayId,
-                                      partnerId: income.TransactionPartnerId,
-                                      amount: income.Amount,
-                                      transactionDate: income.Date);
-
-                return income.ToDto();
+                return new CreateTransactionResponse { Transaction = income.ToDto() };
             }
 
             // =========================
@@ -137,7 +129,6 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
             {
                 if (!await _categoryService.CategoryValidAndExist(dto.CategoryId.Value))
                     throw new NotFoundException("Invalid category");
-
                 categoryId = dto.CategoryId.Value;
             }
             else if (dto.NewCategory != null)
@@ -148,6 +139,37 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
             else
                 throw new BadRequestException("Category is required for expense");
 
+            // =========================
+            // 5. VALIDATE AGAINST RULES
+            // =========================
+            var validationDto = new ExpenseTransactionValidationDto
+            {
+                Amount = dto.Amount,
+                PaymentGatewayId = paymentGatewayId,
+                CategoryId = categoryId,
+                TransactionPartnerId = partnerId
+            };
+
+            var validationResult = await _validationService.ValidateExpenseAsync(validationDto);
+
+            // =========================
+            // 6. HANDLE VIOLATIONS
+            // =========================
+            if (!validationResult.IsValid)
+            {
+                // cache the transaction for user confirmation
+                var cachedId = await _pendingCache.CacheAsync(dto);
+
+                return new CreateTransactionResponse
+                {
+                    CachedTransactionId = cachedId,
+                    RuleValidation = validationResult
+                };
+            }
+
+            // =========================
+            // 7. SAVE EXPENSE
+            // =========================
             var expense = new Expense
             {
                 TransactionId = Guid.NewGuid(),
@@ -155,32 +177,49 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
                 Title = dto.Title,
                 TransactionDetails = dto.TransactionDetails,
                 Date = dto.Date,
-
                 PaymentType = dto.PaymentType,
                 PaymentGatewayId = paymentGatewayId,
                 TransactionPartnerId = partnerId,
-
                 CategoryId = categoryId,
                 FeeAmount = dto.FeeAmount ?? 0
             };
 
-            _context.Add(expense);
+            await ApplyTransactionAsync(expense);
 
-            await _context.SaveChangesAsync();
-
-            _ = _snapshotService.ApplyExpenseAsync(
-                              userId: _currentUserService.UserId!,
-                              gatewayId: expense.PaymentGatewayId,
-                              categoryId: expense.CategoryId,
-                              partnerId: expense.TransactionPartnerId,
-                              amount: expense.Amount,
-                              transactionDate: expense.Date);
-
-            return expense.ToDto();
+            return new CreateTransactionResponse
+            {
+                Transaction = expense.ToDto(),
+                RuleValidation = validationResult.Violations.Any()
+                                    ? validationResult    
+                                    : null
+            };
         }
 
+        public async Task<CreateTransactionResponse> ConfirmPendingTransactionAsync(Guid cachedId)
+        {
+            var dto = await _pendingCache.GetAsync(cachedId)
+                ?? throw new NotFoundException("Pending transaction not found or expired");
 
+            await _pendingCache.DeleteAsync(cachedId);
 
+            var expense = new Expense
+            {
+                TransactionId = Guid.NewGuid(),
+                Amount = dto.Amount,
+                Title = dto.Title,
+                TransactionDetails = dto.TransactionDetails,
+                Date = dto.Date,
+                PaymentType = dto.PaymentType,
+                PaymentGatewayId = dto.PaymentGatewayId!.Value,
+                TransactionPartnerId = dto.TransactionPartnerId!.Value,
+                CategoryId = dto.CategoryId!.Value,
+                FeeAmount = dto.FeeAmount ?? 0
+            };
+
+            await ApplyTransactionAsync(expense);
+
+            return new CreateTransactionResponse { Transaction = expense.ToDto() };
+        }
 
         public async Task<PagedResult<TransactionDto>> GetUserTransactionsAsync(TransactionFilterDto filter)
         {
@@ -348,5 +387,34 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
                 .Where(x => x.TransactionPartnerId == id)
                 .ToSimpleDto()
                 .ToListAsync();
+
+
+        private async Task ApplyTransactionAsync(Transaction transaction)
+        {
+            _context.Add(transaction);
+            await _context.SaveChangesAsync();
+
+            if (transaction is Income income)
+            {
+                _ = _snapshotService.ApplyIncomeAsync(
+                    userId: _currentUserService.UserId!,
+                    gatewayId: income.PaymentGatewayId,
+                    partnerId: income.TransactionPartnerId,
+                    amount: income.Amount,
+                    transactionDate: income.Date);
+            }
+            else if (transaction is Expense expense)
+            {
+                _ = _snapshotService.ApplyExpenseAsync(
+                    userId: _currentUserService.UserId!,
+                    gatewayId: expense.PaymentGatewayId,
+                    categoryId: expense.CategoryId,
+                    partnerId: expense.TransactionPartnerId,
+                    amount: expense.Amount,
+                    transactionDate: expense.Date);
+            }
+        }
+
+
     }
 }

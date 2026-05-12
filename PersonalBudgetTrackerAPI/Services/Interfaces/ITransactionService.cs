@@ -5,8 +5,8 @@ namespace PersonalBudgetTrackerAPI.Services.Interfaces
 {
     public interface ITransactionService
     {
-        Task<TransactionDto> CreateAsync(CreateTransactionDto dto);
-
+        Task<CreateTransactionResponse> CreateAsync(CreateTransactionDto dto);
+        Task<CreateTransactionResponse> ConfirmPendingTransactionAsync(Guid cachedId);
         Task<TransactionDto> GetByIdAsync(Guid id);
 
         Task<PagedResult<TransactionDto>> GetUserTransactionsAsync(TransactionFilterDto filter);
