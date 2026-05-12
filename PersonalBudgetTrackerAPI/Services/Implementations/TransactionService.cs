@@ -401,7 +401,7 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
                     gatewayId: income.PaymentGatewayId,
                     partnerId: income.TransactionPartnerId,
                     amount: income.Amount,
-                    transactionDate: income.Date);
+                    transactionDate: DateTime.Now);
             }
             else if (transaction is Expense expense)
             {
@@ -411,7 +411,7 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
                     categoryId: expense.CategoryId,
                     partnerId: expense.TransactionPartnerId,
                     amount: expense.Amount,
-                    transactionDate: expense.Date);
+                    transactionDate: DateTime.Now);
             }
         }
 
