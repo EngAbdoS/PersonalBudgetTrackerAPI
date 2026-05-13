@@ -15,6 +15,7 @@ using PersonalBudgetTrackerAPI.Authorization.Policies;
 using PersonalBudgetTrackerAPI.Authorization.Requirements;
 using PersonalBudgetTrackerAPI.BackgroundJobs.Implementations;
 using PersonalBudgetTrackerAPI.BackgroundJobs.Interfaces;
+using PersonalBudgetTrackerAPI.BackgroundJobs.Jobs;
 using PersonalBudgetTrackerAPI.BackgroundJobs.Schedulers;
 using PersonalBudgetTrackerAPI.DatabaseContext;
 using PersonalBudgetTrackerAPI.Identity;
@@ -120,9 +121,15 @@ builder.Services.AddScoped<IPendingTransactionCacheService, PendingTransactionCa
 
 builder.Services.AddScoped<IFinanialRuleService, FinanialRuleService>();
 builder.Services.AddScoped<IDailySnapshotMongoService, DailySnapshotMongoService>();
-builder.Services.AddScoped<ISnapshotPromotionJob, SnapshotPromotionJob>();
 builder.Services.AddScoped<IFinancialAggregatorService, FinancialAggregatorService>();
 builder.Services.AddScoped<ITransactionValidationService, TransactionValidationService>();
+
+
+builder.Services.AddScoped<ISnapshotPromotionJob, SnapshotPromotionJob>();
+builder.Services.AddScoped<IRuleDeactivationJob, RuleDeactivationJob>();
+builder.Services.AddScoped<IRuleActivationJob, RuleActivationJob>();
+
+
 
 builder.Services.AddOpenApi();
 
@@ -144,6 +151,8 @@ using (var scope = app.Services.CreateScope())
 }
 
 SnapshotPromotionJobScheduler.Register(app.Services);
+RuleActivationJobScheduler.Register(app.Services);
+RuleDeactivationJobScheduler.Register(app.Services);
 
 app.UseHangfireDashboard("/hangfire");
 
