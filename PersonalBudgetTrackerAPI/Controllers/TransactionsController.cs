@@ -3,7 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using PersonalBudgetTrackerAPI.Common;
 using PersonalBudgetTrackerAPI.Common.Pagination;
 using PersonalBudgetTrackerAPI.DTOs.Entities.TransactionDTOs;
-using PersonalBudgetTrackerAPI.Services.Interfaces;
+using PersonalBudgetTrackerAPI.Services.Implementations;
+using PersonalBudgetTrackerAPI.Services.Interfaces.Entities;
 
 namespace PersonalBudgetTrackerAPI.Controllers
 {
@@ -37,10 +38,17 @@ namespace PersonalBudgetTrackerAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<ApiResponse<TransactionDto>>> Create([FromBody] CreateTransactionDto dto)
+        public async Task<ActionResult<ApiResponse<CreateTransactionResponse>>> Create([FromBody] CreateTransactionDto dto)
         {
             var result = await _service.CreateAsync(dto);
-            return Ok(ApiResponse<TransactionDto>.Ok(result, "Transaction created"));
+            return Ok(ApiResponse<CreateTransactionResponse>.Ok(result, "Transaction created"));
+        }
+
+        [HttpPost("confirm/{cachedId}")]
+        public async Task<ActionResult<ApiResponse<CreateTransactionResponse>>> ConfirmPendingTransaction([FromRoute]Guid cachedId)
+        {
+            var result = await _service.ConfirmPendingTransactionAsync(cachedId);
+            return Ok(ApiResponse<CreateTransactionResponse>.Ok(result, "Pending transaction confirmed"));
         }
 
         // GET: api/transactions/requirements

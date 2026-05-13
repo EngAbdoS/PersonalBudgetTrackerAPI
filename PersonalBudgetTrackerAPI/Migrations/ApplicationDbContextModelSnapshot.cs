@@ -473,6 +473,92 @@ namespace PersonalBudgetTrackerAPI.Migrations
                     b.ToTable("TransactionPartner");
                 });
 
+            modelBuilder.Entity("PersonalBudgetTrackerAPI.Models.FinancialPrefrances.FinancialRule", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ExpiresAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastActivatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("PaymentGatewayId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("PeriodEnd")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("PeriodStart")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("PeriodType")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RecurrenceMode")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("RecurrencePeriod")
+                        .HasColumnType("int");
+
+                    b.Property<string>("RuleType")
+                        .IsRequired()
+                        .HasMaxLength(21)
+                        .HasColumnType("nvarchar(21)");
+
+                    b.Property<int>("ScopeType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Value")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("ValueType")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PaymentGatewayId");
+
+                    b.ToTable("FinancialRules");
+
+                    b.HasDiscriminator<string>("RuleType").HasValue("FinancialRule");
+
+                    b.UseTphMappingStrategy();
+                });
+
             modelBuilder.Entity("PersonalBudgetTrackerAPI.Models.Entities.Expense", b =>
                 {
                     b.HasBaseType("PersonalBudgetTrackerAPI.Models.Entities.Transaction");
@@ -498,6 +584,40 @@ namespace PersonalBudgetTrackerAPI.Migrations
                     b.HasIndex("ReasonId");
 
                     b.HasDiscriminator().HasValue("Income");
+                });
+
+            modelBuilder.Entity("PersonalBudgetTrackerAPI.Models.FinancialPrefrances.ExpenseLimitRule", b =>
+                {
+                    b.HasBaseType("PersonalBudgetTrackerAPI.Models.FinancialPrefrances.FinancialRule");
+
+                    b.Property<Guid?>("CategoryId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("TargetType")
+                        .HasColumnType("int");
+
+                    b.Property<Guid?>("TransactionPartnerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("TransactionPartnerId");
+
+                    b.HasDiscriminator().HasValue("ExpenseLimit");
+                });
+
+            modelBuilder.Entity("PersonalBudgetTrackerAPI.Models.FinancialPrefrances.MinimumBalanceRule", b =>
+                {
+                    b.HasBaseType("PersonalBudgetTrackerAPI.Models.FinancialPrefrances.FinancialRule");
+
+                    b.HasDiscriminator().HasValue("MinimumBalance");
+                });
+
+            modelBuilder.Entity("PersonalBudgetTrackerAPI.Models.FinancialPrefrances.SavingRule", b =>
+                {
+                    b.HasBaseType("PersonalBudgetTrackerAPI.Models.FinancialPrefrances.FinancialRule");
+
+                    b.HasDiscriminator().HasValue("SavingGoal");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -570,6 +690,15 @@ namespace PersonalBudgetTrackerAPI.Migrations
                     b.Navigation("TransactionPartner");
                 });
 
+            modelBuilder.Entity("PersonalBudgetTrackerAPI.Models.FinancialPrefrances.FinancialRule", b =>
+                {
+                    b.HasOne("PersonalBudgetTrackerAPI.Models.Entities.PaymentGateway", "PaymentGateway")
+                        .WithMany()
+                        .HasForeignKey("PaymentGatewayId");
+
+                    b.Navigation("PaymentGateway");
+                });
+
             modelBuilder.Entity("PersonalBudgetTrackerAPI.Models.Entities.Expense", b =>
                 {
                     b.HasOne("PersonalBudgetTrackerAPI.Models.Entities.Category", "Category")
@@ -590,6 +719,21 @@ namespace PersonalBudgetTrackerAPI.Migrations
                         .IsRequired();
 
                     b.Navigation("Reason");
+                });
+
+            modelBuilder.Entity("PersonalBudgetTrackerAPI.Models.FinancialPrefrances.ExpenseLimitRule", b =>
+                {
+                    b.HasOne("PersonalBudgetTrackerAPI.Models.Entities.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId");
+
+                    b.HasOne("PersonalBudgetTrackerAPI.Models.Entities.TransactionPartner", "TransactionPartner")
+                        .WithMany()
+                        .HasForeignKey("TransactionPartnerId");
+
+                    b.Navigation("Category");
+
+                    b.Navigation("TransactionPartner");
                 });
 #pragma warning restore 612, 618
         }

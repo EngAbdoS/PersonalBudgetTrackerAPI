@@ -4,7 +4,7 @@ using PersonalBudgetTrackerAPI.Common;
 using PersonalBudgetTrackerAPI.Common.Pagination;
 using PersonalBudgetTrackerAPI.DTOs.Entities.CategoryDTOs;
 using PersonalBudgetTrackerAPI.DTOs.Entities.TransactionDTOs;
-using PersonalBudgetTrackerAPI.Services.Interfaces;
+using PersonalBudgetTrackerAPI.Services.Interfaces.Entities;
 
 namespace PersonalBudgetTrackerAPI.Controllers
 {

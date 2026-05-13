@@ -6,7 +6,7 @@ using PersonalBudgetTrackerAPI.Common.Pagination;
 using PersonalBudgetTrackerAPI.DatabaseContext;
 using PersonalBudgetTrackerAPI.DTOs.Entities.ReasonDTOs;
 using PersonalBudgetTrackerAPI.DTOs.Entities.TransactionDTOs;
-using PersonalBudgetTrackerAPI.Services.Interfaces;
+using PersonalBudgetTrackerAPI.Services.Interfaces.Entities;
 
 namespace PersonalBudgetTrackerAPI.Controllers
 {

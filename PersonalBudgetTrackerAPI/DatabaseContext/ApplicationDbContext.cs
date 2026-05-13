@@ -2,7 +2,8 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using PersonalBudgetTrackerAPI.Identity;
 using PersonalBudgetTrackerAPI.Models.Entities;
-using PersonalBudgetTrackerAPI.Services.Interfaces;
+using PersonalBudgetTrackerAPI.Models.FinancialPrefrances;
+using PersonalBudgetTrackerAPI.Services.Interfaces.Auth;
 
 namespace PersonalBudgetTrackerAPI.DatabaseContext
 {
@@ -25,6 +26,7 @@ namespace PersonalBudgetTrackerAPI.DatabaseContext
         public DbSet<Reason> Reason { get; set; }
         public DbSet<TransactionPartner> TransactionPartner { get; set; }
 
+        public DbSet<FinancialRule> FinancialRules { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -34,6 +36,13 @@ namespace PersonalBudgetTrackerAPI.DatabaseContext
             .HasValue<Transaction>("Transaction")
             .HasValue<Income>("Income")
             .HasValue<Expense>("Expense");
+
+            modelBuilder.Entity<FinancialRule>()
+                .HasDiscriminator<string>("RuleType")
+                .HasValue<FinancialRule>("FinancialRule")  
+                .HasValue<SavingRule>("SavingGoal")
+                .HasValue<MinimumBalanceRule>("MinimumBalance")
+                .HasValue<ExpenseLimitRule>("ExpenseLimit");
 
             modelBuilder.Entity<Transaction>()
                 .HasQueryFilter(t => !t.IsDeleted && t.CreatedBy == _currentUserService.UserId);
@@ -49,6 +58,9 @@ namespace PersonalBudgetTrackerAPI.DatabaseContext
 
             modelBuilder.Entity<TransactionPartner>()
                 .HasQueryFilter(tp => !tp.IsDeleted && tp.CreatedBy == _currentUserService.UserId);
+
+            modelBuilder.Entity<FinancialRule>()
+                .HasQueryFilter(fr => !fr.IsDeleted && fr.CreatedBy == _currentUserService.UserId);
 
             base.OnModelCreating(modelBuilder);
         }

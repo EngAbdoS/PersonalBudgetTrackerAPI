@@ -1,19 +1,32 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Serializers;
+using MongoDB.Driver;
 using PersonalBudgetTrackerAPI;
 using PersonalBudgetTrackerAPI.Authorization.Handlers;
 using PersonalBudgetTrackerAPI.Authorization.Policies;
 using PersonalBudgetTrackerAPI.Authorization.Requirements;
+using PersonalBudgetTrackerAPI.BackgroundJobs.Implementations;
+using PersonalBudgetTrackerAPI.BackgroundJobs.Interfaces;
+using PersonalBudgetTrackerAPI.BackgroundJobs.Jobs;
+using PersonalBudgetTrackerAPI.BackgroundJobs.Schedulers;
 using PersonalBudgetTrackerAPI.DatabaseContext;
 using PersonalBudgetTrackerAPI.Identity;
 using PersonalBudgetTrackerAPI.Middleware;
-using PersonalBudgetTrackerAPI.Services.Implementations;
-using PersonalBudgetTrackerAPI.Services.Interfaces;
+using PersonalBudgetTrackerAPI.MongoDB.Settings;
+using PersonalBudgetTrackerAPI.Services.Implementations.Auth;
+using PersonalBudgetTrackerAPI.Services.Implementations.Entities;
+using PersonalBudgetTrackerAPI.Services.Implementations.FinanialPrefrances;
+using PersonalBudgetTrackerAPI.Services.Interfaces.Auth;
+using PersonalBudgetTrackerAPI.Services.Interfaces.Entities;
+using PersonalBudgetTrackerAPI.Services.Interfaces.FinanialPrefrances;
 using Scalar.AspNetCore;
 using StackExchange.Redis;
 using System.Text;
@@ -31,8 +44,26 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddSingleton<IConnectionMultiplexer>(
     ConnectionMultiplexer.Connect(builder.Configuration["Redis:ConnectionString"]!)
 );
+builder.Services.Configure<MongoDbSettings>( builder.Configuration.GetSection("MongoDB"));
+BsonSerializer.RegisterSerializer(new DateOnlySerializer());
+
+builder.Services.AddSingleton<IMongoClient>(sp =>
+    new MongoClient(
+        builder.Configuration["MongoDB:ConnectionString"]));
+
+
+builder.Services.AddHangfire(config => config
+    .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+    .UseSimpleAssemblyNameTypeSerializer()
+    .UseRecommendedSerializerSettings()
+    .UseSqlServerStorage(builder.Configuration.GetConnectionString("Default")));
+
+builder.Services.AddHangfireServer();
+
+
 
 builder.Services.AddScoped<ITokenStore, RedisTokenStore>();
+builder.Services.AddScoped<IDaySnapshotService, RedisDaySnapshotService>();
 builder.Services.AddTransient<IJwtService, JwtService>();
 builder.Services.AddScoped<IAuthorizationHandler, DbRoleHandler>();
 // For Identity
@@ -90,6 +121,18 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IPaymentGatewayService, PaymentGatewayService>();
 builder.Services.AddScoped<ITransactionPartnerService, TransactionPartnerService>();
 builder.Services.AddScoped<ITransactionService, TransactionService>();
+builder.Services.AddScoped<IPendingTransactionCacheService, PendingTransactionCacheService>();
+
+builder.Services.AddScoped<IFinanialRuleService, FinanialRuleService>();
+builder.Services.AddScoped<IDailySnapshotMongoService, DailySnapshotMongoService>();
+builder.Services.AddScoped<IFinancialAggregatorService, FinancialAggregatorService>();
+builder.Services.AddScoped<ITransactionValidationService, TransactionValidationService>();
+
+
+builder.Services.AddScoped<ISnapshotPromotionJob, SnapshotPromotionJob>();
+builder.Services.AddScoped<IRuleDeactivationJob, RuleDeactivationJob>();
+builder.Services.AddScoped<IRuleActivationJob, RuleActivationJob>();
+
 
 
 builder.Services.AddOpenApi();
@@ -108,8 +151,14 @@ if (app.Environment.IsDevelopment())
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-    SeedData.Seed(services);
+     SeedData.Seed(services);
 }
+
+SnapshotPromotionJobScheduler.Register(app.Services);
+RuleActivationJobScheduler.Register(app.Services);
+RuleDeactivationJobScheduler.Register(app.Services);
+
+app.UseHangfireDashboard("/hangfire");
 
 app.UseHttpsRedirection();
 
