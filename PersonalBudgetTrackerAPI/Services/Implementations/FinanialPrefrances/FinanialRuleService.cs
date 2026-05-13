@@ -9,10 +9,11 @@ using PersonalBudgetTrackerAPI.DTOs.FinanialPrefrancesDTOs.FinanialRulesBaseDTOs
 using PersonalBudgetTrackerAPI.DTOs.FinanialPrefrancesDTOs.MinimumBalanceRuleDTOs;
 using PersonalBudgetTrackerAPI.DTOs.FinanialPrefrancesDTOs.SavingRuleDTOs;
 using PersonalBudgetTrackerAPI.Models.FinancialPrefrances;
-using PersonalBudgetTrackerAPI.Services.Interfaces;
+using PersonalBudgetTrackerAPI.Services.Interfaces.Entities;
+using PersonalBudgetTrackerAPI.Services.Interfaces.FinanialPrefrances;
 using System.Data;
 
-namespace PersonalBudgetTrackerAPI.Services.Implementations
+namespace PersonalBudgetTrackerAPI.Services.Implementations.FinanialPrefrances
 {
     public class FinanialRuleService : IFinanialRuleService
     {

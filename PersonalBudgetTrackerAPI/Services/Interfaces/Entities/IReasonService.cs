@@ -2,7 +2,7 @@
 using PersonalBudgetTrackerAPI.DTOs.Entities.ReasonDTOs;
 using PersonalBudgetTrackerAPI.Models.Entities;
 
-namespace PersonalBudgetTrackerAPI.Services.Interfaces
+namespace PersonalBudgetTrackerAPI.Services.Interfaces.Entities
 {
     public interface IReasonService
     {

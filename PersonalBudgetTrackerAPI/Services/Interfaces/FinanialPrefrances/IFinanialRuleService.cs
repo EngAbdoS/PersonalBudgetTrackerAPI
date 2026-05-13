@@ -5,7 +5,7 @@ using PersonalBudgetTrackerAPI.DTOs.FinanialPrefrancesDTOs.FinanialRulesBaseDTOs
 using PersonalBudgetTrackerAPI.DTOs.FinanialPrefrancesDTOs.MinimumBalanceRuleDTOs;
 using PersonalBudgetTrackerAPI.DTOs.FinanialPrefrancesDTOs.SavingRuleDTOs;
 
-namespace PersonalBudgetTrackerAPI.Services.Interfaces
+namespace PersonalBudgetTrackerAPI.Services.Interfaces.FinanialPrefrances
 {
     public interface IFinanialRuleService
     {

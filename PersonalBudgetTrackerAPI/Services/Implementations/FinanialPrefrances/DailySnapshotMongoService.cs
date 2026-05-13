@@ -3,9 +3,10 @@ using MongoDB.Driver;
 using PersonalBudgetTrackerAPI.DTOs.FinanialPrefrancesDTOs.DailySnapshot;
 using PersonalBudgetTrackerAPI.MongoDB.Documents;
 using PersonalBudgetTrackerAPI.MongoDB.Settings;
-using PersonalBudgetTrackerAPI.Services.Interfaces;
+using PersonalBudgetTrackerAPI.Services.Interfaces.Auth;
+using PersonalBudgetTrackerAPI.Services.Interfaces.FinanialPrefrances;
 
-namespace PersonalBudgetTrackerAPI.Services.Implementations
+namespace PersonalBudgetTrackerAPI.Services.Implementations.FinanialPrefrances
 {
     public class DailySnapshotMongoService : IDailySnapshotMongoService
     {

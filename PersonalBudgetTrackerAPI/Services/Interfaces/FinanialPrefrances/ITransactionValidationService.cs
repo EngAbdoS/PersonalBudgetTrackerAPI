@@ -1,6 +1,6 @@
 ﻿using PersonalBudgetTrackerAPI.DTOs.Entities.TransactionDTOs;
 
-namespace PersonalBudgetTrackerAPI.Services.Interfaces
+namespace PersonalBudgetTrackerAPI.Services.Interfaces.FinanialPrefrances
 {
     public interface ITransactionValidationService
     {

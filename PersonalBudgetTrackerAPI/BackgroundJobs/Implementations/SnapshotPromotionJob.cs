@@ -1,5 +1,5 @@
 ﻿using PersonalBudgetTrackerAPI.BackgroundJobs.Interfaces;
-using PersonalBudgetTrackerAPI.Services.Interfaces;
+using PersonalBudgetTrackerAPI.Services.Interfaces.FinanialPrefrances;
 
 namespace PersonalBudgetTrackerAPI.BackgroundJobs.Implementations
 {

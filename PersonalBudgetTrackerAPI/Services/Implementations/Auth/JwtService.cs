@@ -3,13 +3,13 @@ using Microsoft.IdentityModel.Tokens;
 using NuGet.Packaging;
 using PersonalBudgetTrackerAPI.Identity;
 using PersonalBudgetTrackerAPI.Models.Auth;
-using PersonalBudgetTrackerAPI.Services.Interfaces;
+using PersonalBudgetTrackerAPI.Services.Interfaces.Auth;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace PersonalBudgetTrackerAPI.Services.Implementations
+namespace PersonalBudgetTrackerAPI.Services.Implementations.Auth
 {
     public class JwtService : IJwtService
     {

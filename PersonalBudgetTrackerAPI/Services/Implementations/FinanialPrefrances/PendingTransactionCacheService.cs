@@ -1,9 +1,9 @@
 ﻿using Newtonsoft.Json;
 using PersonalBudgetTrackerAPI.DTOs.Entities.TransactionDTOs;
-using PersonalBudgetTrackerAPI.Services.Interfaces;
+using PersonalBudgetTrackerAPI.Services.Interfaces.FinanialPrefrances;
 using StackExchange.Redis;
 
-namespace PersonalBudgetTrackerAPI.Services.Implementations
+namespace PersonalBudgetTrackerAPI.Services.Implementations.FinanialPrefrances
 {
     public class PendingTransactionCacheService : IPendingTransactionCacheService
     {

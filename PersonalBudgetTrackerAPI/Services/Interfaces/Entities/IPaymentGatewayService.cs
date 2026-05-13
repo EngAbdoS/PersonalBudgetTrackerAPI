@@ -1,6 +1,6 @@
 ﻿using PersonalBudgetTrackerAPI.DTOs.Entities.PaymentGatewayDtos;
 
-namespace PersonalBudgetTrackerAPI.Services.Interfaces
+namespace PersonalBudgetTrackerAPI.Services.Interfaces.Entities
 {
     public interface IPaymentGatewayService
     {

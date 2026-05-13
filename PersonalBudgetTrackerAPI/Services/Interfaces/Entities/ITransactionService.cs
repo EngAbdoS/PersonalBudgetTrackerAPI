@@ -1,7 +1,7 @@
 ﻿using PersonalBudgetTrackerAPI.Common.Pagination;
 using PersonalBudgetTrackerAPI.DTOs.Entities.TransactionDTOs;
 
-namespace PersonalBudgetTrackerAPI.Services.Interfaces
+namespace PersonalBudgetTrackerAPI.Services.Interfaces.Entities
 {
     public interface ITransactionService
     {

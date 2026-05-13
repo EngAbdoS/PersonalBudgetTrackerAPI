@@ -1,4 +1,4 @@
-﻿namespace PersonalBudgetTrackerAPI.Services.Interfaces
+﻿namespace PersonalBudgetTrackerAPI.Services.Interfaces.Auth
 {
     public interface ICurrentUserService
     {

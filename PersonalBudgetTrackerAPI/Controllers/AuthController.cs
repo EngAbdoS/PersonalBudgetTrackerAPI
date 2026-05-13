@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using PersonalBudgetTrackerAPI.DTOs.Auth;
 using PersonalBudgetTrackerAPI.Identity;
 using PersonalBudgetTrackerAPI.Models.Auth;
-using PersonalBudgetTrackerAPI.Services.Interfaces;
+using PersonalBudgetTrackerAPI.Services.Interfaces.Auth;
 using System.Security.Claims;
 
 namespace PersonalBudgetTrackerAPI.Controllers

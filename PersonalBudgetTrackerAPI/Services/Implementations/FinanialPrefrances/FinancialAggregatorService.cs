@@ -1,9 +1,10 @@
 ﻿using PersonalBudgetTrackerAPI.DTOs.FinanialPrefrancesDTOs.DailySnapshot;
 using PersonalBudgetTrackerAPI.DTOs.FinanialPrefrancesDTOs.FinanialRulesBaseDTOs;
 using PersonalBudgetTrackerAPI.Models.FinancialPrefrances;
-using PersonalBudgetTrackerAPI.Services.Interfaces;
+using PersonalBudgetTrackerAPI.Services.Interfaces.Auth;
+using PersonalBudgetTrackerAPI.Services.Interfaces.FinanialPrefrances;
 
-namespace PersonalBudgetTrackerAPI.Services.Implementations
+namespace PersonalBudgetTrackerAPI.Services.Implementations.FinanialPrefrances
 {
     public class FinancialAggregatorService : IFinancialAggregatorService
     {

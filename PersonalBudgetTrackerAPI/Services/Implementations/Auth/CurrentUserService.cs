@@ -1,7 +1,7 @@
-﻿using PersonalBudgetTrackerAPI.Services.Interfaces;
+﻿using PersonalBudgetTrackerAPI.Services.Interfaces.Auth;
 using System.Security.Claims;
 
-namespace PersonalBudgetTrackerAPI.Services.Implementations
+namespace PersonalBudgetTrackerAPI.Services.Implementations.Auth
 {
     public class CurrentUserService : ICurrentUserService
     {

@@ -1,7 +1,7 @@
-﻿using PersonalBudgetTrackerAPI.Services.Interfaces;
+﻿using PersonalBudgetTrackerAPI.Services.Interfaces.Auth;
 using StackExchange.Redis;
 
-namespace PersonalBudgetTrackerAPI.Services.Implementations
+namespace PersonalBudgetTrackerAPI.Services.Implementations.Auth
 {
     public class RedisTokenStore : ITokenStore
     {

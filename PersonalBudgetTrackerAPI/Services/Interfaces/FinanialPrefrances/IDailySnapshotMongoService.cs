@@ -1,6 +1,6 @@
 ﻿using PersonalBudgetTrackerAPI.DTOs.FinanialPrefrancesDTOs.DailySnapshot;
 
-namespace PersonalBudgetTrackerAPI.Services.Interfaces
+namespace PersonalBudgetTrackerAPI.Services.Interfaces.FinanialPrefrances
 {
     public interface IDailySnapshotMongoService
     {

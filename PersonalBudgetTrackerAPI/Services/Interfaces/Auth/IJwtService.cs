@@ -2,7 +2,7 @@
 using PersonalBudgetTrackerAPI.Models.Auth;
 using System.Security.Claims;
 
-namespace PersonalBudgetTrackerAPI.Services.Interfaces
+namespace PersonalBudgetTrackerAPI.Services.Interfaces.Auth
 {
     public interface IJwtService
     {

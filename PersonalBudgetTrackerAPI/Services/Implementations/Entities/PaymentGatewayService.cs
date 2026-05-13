@@ -3,9 +3,9 @@ using PersonalBudgetTrackerAPI.Common.Exceptions;
 using PersonalBudgetTrackerAPI.DatabaseContext;
 using PersonalBudgetTrackerAPI.DTOs.Entities.PaymentGatewayDtos;
 using PersonalBudgetTrackerAPI.Models.Entities;
-using PersonalBudgetTrackerAPI.Services.Interfaces;
+using PersonalBudgetTrackerAPI.Services.Interfaces.Entities;
 
-namespace PersonalBudgetTrackerAPI.Services.Implementations
+namespace PersonalBudgetTrackerAPI.Services.Implementations.Entities
 {
     public class PaymentGatewayService : IPaymentGatewayService
     {

@@ -4,9 +4,11 @@ using PersonalBudgetTrackerAPI.Common.Pagination;
 using PersonalBudgetTrackerAPI.DatabaseContext;
 using PersonalBudgetTrackerAPI.DTOs.Entities.TransactionDTOs;
 using PersonalBudgetTrackerAPI.Models.Entities;
-using PersonalBudgetTrackerAPI.Services.Interfaces;
+using PersonalBudgetTrackerAPI.Services.Interfaces.Auth;
+using PersonalBudgetTrackerAPI.Services.Interfaces.Entities;
+using PersonalBudgetTrackerAPI.Services.Interfaces.FinanialPrefrances;
 
-namespace PersonalBudgetTrackerAPI.Services.Implementations
+namespace PersonalBudgetTrackerAPI.Services.Implementations.Entities
 {
     public class TransactionService : ITransactionService
     {
