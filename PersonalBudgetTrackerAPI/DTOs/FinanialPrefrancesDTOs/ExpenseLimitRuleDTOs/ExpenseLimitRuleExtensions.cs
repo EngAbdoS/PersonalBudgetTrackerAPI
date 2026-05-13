@@ -28,7 +28,9 @@ namespace PersonalBudgetTrackerAPI.DTOs.FinanialPrefrancesDTOs.ExpenseLimitRuleD
                 CategoryId = rule.CategoryId,
                 CategoryName = rule.Category?.Title,
                 TransactionPartnerId = rule.TransactionPartnerId,
-                TransactionPartnerName = rule.TransactionPartner?.Name
+                TransactionPartnerName = rule.TransactionPartner?.Name,
+                RuleType = rule.GetType().Name
+
             };
         }
 

@@ -1,15 +1,16 @@
 using Microsoft.EntityFrameworkCore;
 using PersonalBudgetTrackerAPI.Common.Exceptions;
 using PersonalBudgetTrackerAPI.Common.Pagination;
+using PersonalBudgetTrackerAPI.Common.Utilities;
 using PersonalBudgetTrackerAPI.DatabaseContext;
 using PersonalBudgetTrackerAPI.DTOs.FinanialPrefrancesDTOs.ExpenseLimitRuleDTOs;
 using PersonalBudgetTrackerAPI.DTOs.FinanialPrefrancesDTOs.FinanialRuleDTOs;
 using PersonalBudgetTrackerAPI.DTOs.FinanialPrefrancesDTOs.FinanialRulesBaseDTOs;
 using PersonalBudgetTrackerAPI.DTOs.FinanialPrefrancesDTOs.MinimumBalanceRuleDTOs;
 using PersonalBudgetTrackerAPI.DTOs.FinanialPrefrancesDTOs.SavingRuleDTOs;
-using PersonalBudgetTrackerAPI.Common.Utilities;
 using PersonalBudgetTrackerAPI.Models.FinancialPrefrances;
 using PersonalBudgetTrackerAPI.Services.Interfaces;
+using System.Data;
 
 namespace PersonalBudgetTrackerAPI.Services.Implementations
 {
@@ -375,6 +376,8 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
                 {
                     dtos.Add(sr.ToDto());
                 }
+
+
             }
 
             return new PagedResult<FinancialRuleBaseDto>

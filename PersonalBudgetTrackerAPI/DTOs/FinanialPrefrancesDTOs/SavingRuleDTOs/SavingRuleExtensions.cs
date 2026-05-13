@@ -23,7 +23,9 @@ namespace PersonalBudgetTrackerAPI.DTOs.FinanialPrefrancesDTOs.SavingRuleDTOs
                 RecurrencePeriod = rule.RecurrencePeriod,
                 IsActive = rule.IsActive,
                 ExpiresAt = rule.ExpiresAt,
-                CreatedAt = rule.CreatedAt
+                CreatedAt = rule.CreatedAt,
+                RuleType = rule.GetType().Name
+
             };
         }
 
