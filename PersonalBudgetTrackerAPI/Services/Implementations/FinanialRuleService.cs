@@ -20,17 +20,20 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
         private readonly ICategoryService _categoryService;
         private readonly ITransactionPartnerService _transactionPartnerService;
         private readonly IPaymentGatewayService _paymentGatewayService;
+        private readonly IFinancialAggregatorService _financialAggregatorService;
 
         public FinanialRuleService(
             ApplicationDbContext context, 
             ICategoryService categoryService, 
             ITransactionPartnerService transactionPartnerService, 
-            IPaymentGatewayService paymentGatewayService)
+            IPaymentGatewayService paymentGatewayService,
+            IFinancialAggregatorService financialAggregatorService)
         {
             _context = context;
             _categoryService = categoryService;
             _transactionPartnerService = transactionPartnerService;
             _paymentGatewayService = paymentGatewayService;
+            _financialAggregatorService = financialAggregatorService;
         }
 
         public async Task<ExpenseLimitRuleDto> CreateExpenseLimitRuleAsync(CreateExpenseLimitRuleDto dto)
@@ -418,10 +421,69 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
         }
         public async Task<List<SavingGoalStatusDto>> GetSavingGoalsStatusAsync()
         {
-            throw new NotImplementedException("Method not implemented. it will use day live status with redis ");
+
+            var savingRules = await _context.FinancialRules
+                                       .OfType<SavingRule>()
+                                       .Where(r => r.IsActive)
+                                       .Include(r => r.PaymentGateway)
+                                       .ToListAsync();
+
+            if (!savingRules.Any())
+                throw new NotFoundException("No active saving goals found.");
+
+            var result = new List<SavingGoalStatusDto>();
+
+            foreach (var rule in savingRules)
+            {
+                var ruleDto = rule.ToDto(); 
+
+                var aggregationInput = ruleDto.ToAggregationInput();
+
+                var from = DateOnly.FromDateTime(rule.PeriodStart ?? DateTime.UtcNow);
+                var to = DateOnly.FromDateTime(rule.PeriodEnd ?? DateTime.UtcNow);
+
+                decimal currentSaved = await _financialAggregatorService.AggregateTotalBalance(
+                    from,
+                    rule.PaymentGatewayId,
+                    to
+                );
+
+                decimal targetAmount = rule.ValueType == Models.FinancialPrefrances.ValueType.Percentage
+                    ? await ResolvePercentageTargetAsync(rule)   
+                    : rule.Value;
+
+                decimal remaining = Math.Max(0, targetAmount - currentSaved);
+                decimal progress = targetAmount > 0
+                    ? Math.Min(100, (currentSaved / targetAmount) * 100)
+                    : 0;
+
+                result.Add(new SavingGoalStatusDto
+                {
+                    RuleId = rule.Id,
+                    Title = rule.Title,
+                    TargetAmount = targetAmount,
+                    CurrentSavedAmount = currentSaved,
+                    RemainingAmount = remaining,
+                    ProgressPercentage = Math.Round(progress, 2),
+                    IsCompleted = currentSaved >= targetAmount,
+                    TargetDate = rule.PeriodEnd ?? rule.ExpiresAt
+                });
+            }
+
+            return result;
+
         }
 
+        private async Task<decimal> ResolvePercentageTargetAsync(SavingRule rule)
+        {
+            decimal totalIncome = await _financialAggregatorService.AggregiateTotalIncome(
+                DateOnly.FromDateTime(rule.PeriodStart ?? DateTime.UtcNow),
+                rule.PaymentGatewayId,
+                DateOnly.FromDateTime(rule.PeriodEnd ?? DateTime.UtcNow)
+            );
 
+            return Math.Round(totalIncome * (rule.Value / 100m), 2);
+        }
 
     }
 }
