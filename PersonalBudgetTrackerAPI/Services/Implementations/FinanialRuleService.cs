@@ -60,19 +60,19 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
                 PeriodStart = dto.PeriodStart,
                 PeriodEnd = dto.PeriodEnd,
                 RecurrenceMode = dto.RecurrenceMode,
-                RecurrencePeriod = dto.RecurrencePeriod,
+                RecurrencePeriod = dto.RecurrenceMode == RecurrenceMode.Recurring ? dto.RecurrencePeriod : null,
+                ExpiresAt = dto.RecurrenceMode == RecurrenceMode.Recurring
+                                ? PeriodResolver.ResolveExpiresAt(dto.RecurrencePeriod, DateTime.UtcNow)
+                                : null,
                 TargetType = dto.TargetType,
                 CategoryId = dto.CategoryId,
                 TransactionPartnerId = dto.TransactionPartnerId,
                 IsActive = true
             };
 
-            if (rule.PeriodType != PeriodType.Custom)
-            {
-                var (start, end) = PeriodResolver.Resolve(rule, DateTime.UtcNow);
-                rule.PeriodStart = start;
-                rule.PeriodEnd = end;
-            }
+            var (start, end) = PeriodResolver.Resolve(dto.PeriodType, DateTime.UtcNow, dto.PeriodStart, dto.PeriodEnd);
+            rule.PeriodStart = start;
+            rule.PeriodEnd = end;
 
             _context.FinancialRules.Add(rule);
             await _context.SaveChangesAsync();
@@ -105,16 +105,16 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
                 PeriodStart = dto.PeriodStart,
                 PeriodEnd = dto.PeriodEnd,
                 RecurrenceMode = dto.RecurrenceMode,
-                RecurrencePeriod = dto.RecurrencePeriod,
+                RecurrencePeriod = dto.RecurrenceMode == RecurrenceMode.Recurring ? dto.RecurrencePeriod : null,
+                ExpiresAt = dto.RecurrenceMode == RecurrenceMode.Recurring
+                                ? PeriodResolver.ResolveExpiresAt(dto.RecurrencePeriod, DateTime.UtcNow)
+                                : null,
                 IsActive = true
             };
 
-            if (rule.PeriodType != PeriodType.Custom)
-            {
-                var (start, end) = PeriodResolver.Resolve(rule, DateTime.UtcNow);
-                rule.PeriodStart = start;
-                rule.PeriodEnd = end;
-            }
+            var (start, end) = PeriodResolver.Resolve(dto.PeriodType, DateTime.UtcNow, dto.PeriodStart, dto.PeriodEnd);
+            rule.PeriodStart = start;
+            rule.PeriodEnd = end;
 
             _context.FinancialRules.Add(rule);
             await _context.SaveChangesAsync();
@@ -145,16 +145,16 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations
                 PeriodStart = dto.PeriodStart,
                 PeriodEnd = dto.PeriodEnd,
                 RecurrenceMode = dto.RecurrenceMode,
-                RecurrencePeriod = dto.RecurrencePeriod,
+                RecurrencePeriod = dto.RecurrenceMode == RecurrenceMode.Recurring ? dto.RecurrencePeriod : null,
+                ExpiresAt = dto.RecurrenceMode == RecurrenceMode.Recurring
+                                ? PeriodResolver.ResolveExpiresAt(dto.RecurrencePeriod, DateTime.UtcNow)
+                                : null,
                 IsActive = true
             };
 
-            if (rule.PeriodType != PeriodType.Custom)
-            {
-                var (start, end) = PeriodResolver.Resolve(rule, DateTime.UtcNow);
-                rule.PeriodStart = start;
-                rule.PeriodEnd = end;
-            }
+            var (start, end) = PeriodResolver.Resolve(dto.PeriodType, DateTime.UtcNow, dto.PeriodStart, dto.PeriodEnd);
+            rule.PeriodStart = start;
+            rule.PeriodEnd = end; 
 
             _context.FinancialRules.Add(rule);
             await _context.SaveChangesAsync();

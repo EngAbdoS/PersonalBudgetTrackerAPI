@@ -115,20 +115,27 @@ namespace PersonalBudgetTrackerAPI.DTOs.FinanialPrefrancesDTOs.FinanialRuleDTOs
             {
                 RuleFor(x => x.RecurrencePeriod)
                     .NotNull()
-                    .WithMessage("RecurrencePeriod is required when RecurrenceMode is Recurring")
+                    .WithMessage("RecurrencePeriod is required when RecurrenceMode is Recurring.")
                     .IsInEnum()
-                    .WithMessage("RecurrencePeriod must be a valid period type")
+                    .WithMessage("RecurrencePeriod must be a valid period type.")
                     .Must(p => p.HasValue && p.Value != PeriodType.Custom)
-                    .WithMessage("RecurrencePeriod cannot be Custom — use a standard period (Daily, Weekly, Monthly, Quarterly, or Yearly)");
+                    .WithMessage("RecurrencePeriod cannot be Custom.")
+                    .Must((dto, p) =>
+                        p.HasValue && p.Value.IsGreaterThan(dto.PeriodType))
+                    .WithMessage("RecurrencePeriod must be greater than PeriodType " +
+                                 "(e.g. a Weekly rule must recur Monthly, Quarterly, or Yearly).");
             });
 
             When(x => x.RecurrenceMode == RecurrenceMode.Manual && x.RecurrencePeriod.HasValue, () =>
             {
                 RuleFor(x => x.RecurrencePeriod)
                     .IsInEnum()
-                    .WithMessage("RecurrencePeriod must be a valid period type")
+                    .WithMessage("RecurrencePeriod must be a valid period type.")
                     .Must(p => p.HasValue && p.Value != PeriodType.Custom)
-                    .WithMessage("RecurrencePeriod cannot be Custom");
+                    .WithMessage("RecurrencePeriod cannot be Custom.")
+                    .Must((dto, p) =>
+                        p.HasValue && p.Value.IsGreaterThan(dto.PeriodType))
+                    .WithMessage("RecurrencePeriod must be greater than PeriodType.");
             });
         }
     }
