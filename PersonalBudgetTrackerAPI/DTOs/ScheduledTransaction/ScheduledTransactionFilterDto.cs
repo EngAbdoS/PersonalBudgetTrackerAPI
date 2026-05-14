@@ -1,8 +1,9 @@
-﻿using PersonalBudgetTrackerAPI.Models.FinancialPrefrances;
+using PersonalBudgetTrackerAPI.Common.Pagination;
+using PersonalBudgetTrackerAPI.Models.FinancialPrefrances;
 
 namespace PersonalBudgetTrackerAPI.DTOs.ScheduledTransaction
 {
-    public class ScheduledTransactionFilterDto
+    public class ScheduledTransactionFilterDto : PaginationQuery
     {
         public string? Search { get; set; }
         public bool? IsIncome { get; set; }
@@ -17,5 +18,8 @@ namespace PersonalBudgetTrackerAPI.DTOs.ScheduledTransaction
         public DateTime? DueDateTo { get; set; }
         public DateTime? CreatedFrom { get; set; }
         public DateTime? CreatedTo { get; set; }
+
+        
     }
 }
+
