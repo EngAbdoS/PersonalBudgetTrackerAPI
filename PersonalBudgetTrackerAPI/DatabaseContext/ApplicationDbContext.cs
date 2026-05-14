@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using PersonalBudgetTrackerAPI.Identity;
 using PersonalBudgetTrackerAPI.Models.Entities;
 using PersonalBudgetTrackerAPI.Models.FinancialPrefrances;
+using PersonalBudgetTrackerAPI.Models.ScheduledPayments;
 using PersonalBudgetTrackerAPI.Services.Interfaces.Auth;
 
 namespace PersonalBudgetTrackerAPI.DatabaseContext
@@ -28,6 +29,8 @@ namespace PersonalBudgetTrackerAPI.DatabaseContext
 
         public DbSet<FinancialRule> FinancialRules { get; set; }
 
+        public DbSet<ScheduledTransaction> ScheduledTransactions { get; set; }
+        public DbSet<ScheduledTransactionOccurrence> ScheduledTransactionOccurrences { get; set; }  // ← new
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -37,6 +40,19 @@ namespace PersonalBudgetTrackerAPI.DatabaseContext
             .HasValue<Income>("Income")
             .HasValue<Expense>("Expense");
 
+            modelBuilder.Entity<ScheduledTransaction>().ToTable("ScheduledPayments");
+
+            modelBuilder.Entity<ScheduledTransactionOccurrence>(entity =>
+            {
+                entity.HasKey(o => o.Id);
+
+                entity.HasOne(o => o.ScheduledTransaction)
+                    .WithMany(st => st.Occurrences)
+                    .HasForeignKey(o => o.ScheduledTransactionId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+
             modelBuilder.Entity<FinancialRule>()
                 .HasDiscriminator<string>("RuleType")
                 .HasValue<FinancialRule>("FinancialRule")  
@@ -44,8 +60,12 @@ namespace PersonalBudgetTrackerAPI.DatabaseContext
                 .HasValue<MinimumBalanceRule>("MinimumBalance")
                 .HasValue<ExpenseLimitRule>("ExpenseLimit");
 
+
             modelBuilder.Entity<Transaction>()
-                .HasQueryFilter(t => !t.IsDeleted && t.CreatedBy == _currentUserService.UserId);
+                .HasQueryFilter(t => !t.IsDeleted && t.CreatedBy == _currentUserService.UserId); 
+            
+            modelBuilder.Entity<ScheduledTransaction>()
+                .HasQueryFilter(st => !st.IsDeleted && st.CreatedBy == _currentUserService.UserId);
 
             modelBuilder.Entity<Category>()
                 .HasQueryFilter(c => !c.IsDeleted && c.CreatedBy == _currentUserService.UserId);
