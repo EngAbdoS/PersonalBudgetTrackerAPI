@@ -24,6 +24,7 @@ using PersonalBudgetTrackerAPI.MongoDB.Settings;
 using PersonalBudgetTrackerAPI.Services.Implementations.Auth;
 using PersonalBudgetTrackerAPI.Services.Implementations.Entities;
 using PersonalBudgetTrackerAPI.Services.Implementations.FinanialPrefrances;
+
 using PersonalBudgetTrackerAPI.Services.Interfaces.Auth;
 using PersonalBudgetTrackerAPI.Services.Interfaces.Entities;
 using PersonalBudgetTrackerAPI.Services.Interfaces.FinanialPrefrances;
@@ -122,6 +123,7 @@ builder.Services.AddScoped<IPaymentGatewayService, PaymentGatewayService>();
 builder.Services.AddScoped<ITransactionPartnerService, TransactionPartnerService>();
 builder.Services.AddScoped<ITransactionService, TransactionService>();
 builder.Services.AddScoped<IPendingTransactionCacheService, PendingTransactionCacheService>();
+builder.Services.AddScoped<IScheduledTransactionService, ScheduledTransactionService>();
 
 builder.Services.AddScoped<IFinanialRuleService, FinanialRuleService>();
 builder.Services.AddScoped<IDailySnapshotMongoService, DailySnapshotMongoService>();
@@ -132,6 +134,7 @@ builder.Services.AddScoped<ITransactionValidationService, TransactionValidationS
 builder.Services.AddScoped<ISnapshotPromotionJob, SnapshotPromotionJob>();
 builder.Services.AddScoped<IRuleDeactivationJob, RuleDeactivationJob>();
 builder.Services.AddScoped<IRuleActivationJob, RuleActivationJob>();
+builder.Services.AddScoped<IScheduledTransactionProcessingJob, ScheduledTransactionProcessingJob>();
 
 
 
@@ -157,6 +160,7 @@ using (var scope = app.Services.CreateScope())
 SnapshotPromotionJobScheduler.Register(app.Services);
 RuleActivationJobScheduler.Register(app.Services);
 RuleDeactivationJobScheduler.Register(app.Services);
+ScheduledTransactionProcessingJobScheduler.Register(app.Services);
 
 app.UseHangfireDashboard("/hangfire");
 
