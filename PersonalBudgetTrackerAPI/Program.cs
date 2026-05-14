@@ -24,10 +24,10 @@ using PersonalBudgetTrackerAPI.MongoDB.Settings;
 using PersonalBudgetTrackerAPI.Services.Implementations.Auth;
 using PersonalBudgetTrackerAPI.Services.Implementations.Entities;
 using PersonalBudgetTrackerAPI.Services.Implementations.FinanialPrefrances;
-
 using PersonalBudgetTrackerAPI.Services.Interfaces.Auth;
 using PersonalBudgetTrackerAPI.Services.Interfaces.Entities;
 using PersonalBudgetTrackerAPI.Services.Interfaces.FinanialPrefrances;
+using PersonalBudgetTrackerAPI.Services.Interfaces.Statistics;
 using Scalar.AspNetCore;
 using StackExchange.Redis;
 using System.Text;
@@ -129,6 +129,7 @@ builder.Services.AddScoped<IFinanialRuleService, FinanialRuleService>();
 builder.Services.AddScoped<IDailySnapshotMongoService, DailySnapshotMongoService>();
 builder.Services.AddScoped<IFinancialAggregatorService, FinancialAggregatorService>();
 builder.Services.AddScoped<ITransactionValidationService, TransactionValidationService>();
+builder.Services.AddScoped<IStatisticsService, StatisticsService>();
 
 
 builder.Services.AddScoped<ISnapshotPromotionJob, SnapshotPromotionJob>();
