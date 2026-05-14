@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using PersonalBudgetTrackerAPI.Identity;
 using PersonalBudgetTrackerAPI.Models.Entities;
 using PersonalBudgetTrackerAPI.Models.FinancialPrefrances;
-using PersonalBudgetTrackerAPI.Models.ScheduledPayments;
+using PersonalBudgetTrackerAPI.Models.ScheduledTransaction;
 using PersonalBudgetTrackerAPI.Services.Interfaces.Auth;
 
 namespace PersonalBudgetTrackerAPI.DatabaseContext

@@ -1,7 +1,7 @@
 ﻿using PersonalBudgetTrackerAPI.Models.Entities;
 using PersonalBudgetTrackerAPI.Models.FinancialPrefrances;
 
-namespace PersonalBudgetTrackerAPI.Models.ScheduledPayments
+namespace PersonalBudgetTrackerAPI.Models.ScheduledTransaction
 {
     public class ScheduledTransaction : AuditableEntity
     {

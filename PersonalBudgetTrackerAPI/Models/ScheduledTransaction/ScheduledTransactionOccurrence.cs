@@ -1,4 +1,4 @@
-﻿namespace PersonalBudgetTrackerAPI.Models.ScheduledPayments
+﻿namespace PersonalBudgetTrackerAPI.Models.ScheduledTransaction
 {
     public class ScheduledTransactionOccurrence
     {
