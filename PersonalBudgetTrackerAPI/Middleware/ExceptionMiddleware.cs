@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using PersonalBudgetTrackerAPI.Common.Exceptions;
 
 namespace PersonalBudgetTrackerAPI.Middleware
@@ -30,6 +30,7 @@ namespace PersonalBudgetTrackerAPI.Middleware
             {
                 NotFoundException => StatusCodes.Status404NotFound,
                 BadRequestException => StatusCodes.Status400BadRequest,
+                UnauthorizedException => StatusCodes.Status401Unauthorized,
                 _ => StatusCodes.Status500InternalServerError
             };
 

@@ -1,12 +1,12 @@
-﻿using PersonalBudgetTrackerAPI.Identity;
-using PersonalBudgetTrackerAPI.Models.Auth;
+﻿using PersonalBudgetTrackerAPI.DTOs.Auth;
+using PersonalBudgetTrackerAPI.Identity;
 using System.Security.Claims;
 
 namespace PersonalBudgetTrackerAPI.Services.Interfaces.Auth
 {
     public interface IJwtService
     {
-         Task<AuthResponse> GenerateJWT(ApplicationUser user);
+         Task<AuthResponseDTO> GenerateJWT(ApplicationUser user);
          ClaimsPrincipal? GetPrincipalFromJWTToken(string? token);
 
     }

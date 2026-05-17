@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using NuGet.Packaging;
+using PersonalBudgetTrackerAPI.DTOs.Auth;
 using PersonalBudgetTrackerAPI.Identity;
-using PersonalBudgetTrackerAPI.Models.Auth;
 using PersonalBudgetTrackerAPI.Services.Interfaces.Auth;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -22,7 +22,7 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations.Auth
             _userManager = userManager;
         }
 
-        public async Task<AuthResponse> GenerateJWT(ApplicationUser user)
+        public async Task<AuthResponseDTO> GenerateJWT(ApplicationUser user)
         {
 
             DateTime expiration = DateTime.UtcNow.AddMinutes(Convert.ToDouble(_configuration["Jwt:ExpireTimeMinuts"]));
@@ -53,7 +53,7 @@ namespace PersonalBudgetTrackerAPI.Services.Implementations.Auth
             JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
             string token = tokenHandler.WriteToken(tokenGenerator);
 
-            return new AuthResponse
+            return new AuthResponseDTO
             {
                 Token = token,
                 Expiration = expiration,

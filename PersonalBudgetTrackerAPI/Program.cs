@@ -66,6 +66,7 @@ builder.Services.AddHangfireServer();
 builder.Services.AddScoped<ITokenStore, RedisTokenStore>();
 builder.Services.AddScoped<IDaySnapshotService, RedisDaySnapshotService>();
 builder.Services.AddTransient<IJwtService, JwtService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IAuthorizationHandler, DbRoleHandler>();
 // For Identity
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(

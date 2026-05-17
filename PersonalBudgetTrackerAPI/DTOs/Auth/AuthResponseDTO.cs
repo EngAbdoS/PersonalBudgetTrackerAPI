@@ -1,6 +1,6 @@
-﻿namespace PersonalBudgetTrackerAPI.Models.Auth
+﻿namespace PersonalBudgetTrackerAPI.DTOs.Auth
 {
-    public class AuthResponse
+    public class AuthResponseDTO
     {
         public string FullName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
